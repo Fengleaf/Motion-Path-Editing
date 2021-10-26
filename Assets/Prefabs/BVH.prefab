@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jointPrefab: {fileID: 7343099178498941649, guid: cc74c361d629eb842a5e6bac3d68d144, type: 3}
+  bonePrefab: {fileID: 4739011253023387829, guid: 069c7fe6a44b2974b9fa1b2cb87a9f6a, type: 3}
   root: {fileID: 0}
