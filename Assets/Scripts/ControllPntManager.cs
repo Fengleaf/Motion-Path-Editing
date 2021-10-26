@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PathManager : MonoBehaviour
+public class ControllPntManager : MonoBehaviour
 {
     public GameObject pivot;
     public Plane clipPlane;
@@ -42,10 +42,13 @@ public class PathManager : MonoBehaviour
                 if (Physics.Raycast(ray, out hit))
                 {
                     Transform objectHit = hit.transform;
-                    Debug.Log(objectHit.gameObject.name);
-                    tmpInGamePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity, objectHit);
-                    tmpInGamePivot.transform.localPosition = Vector3.zero;
-                    selectedOb = objectHit.gameObject;
+                    if (objectHit.CompareTag("ControllPnt"))
+                    {
+                        Debug.Log(objectHit.gameObject.name);
+                        tmpInGamePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity, objectHit);
+                        tmpInGamePivot.transform.localPosition = Vector3.zero;
+                        selectedOb = objectHit.gameObject;
+                    }
                 }
             } 
             else if (Input.GetMouseButtonUp(0))

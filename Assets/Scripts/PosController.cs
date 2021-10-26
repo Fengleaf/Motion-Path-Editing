@@ -27,10 +27,13 @@ public class PosController : MonoBehaviour
                 if (Physics.Raycast(ray, out hit))
                 {
                     Transform objectHit = hit.transform;
-                    Debug.Log(objectHit.gameObject.name);
-                    GameObject thePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity);
-                    thePivot.transform.SetParent(objectHit);
-                    isMoving = true;
+                    if (objectHit.CompareTag("ControllPnt"))
+                    {
+                        Debug.Log(objectHit.gameObject.name);
+                        GameObject thePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity);
+                        thePivot.transform.SetParent(objectHit);
+                        isMoving = true;
+                    }
                 }
             }
         }
