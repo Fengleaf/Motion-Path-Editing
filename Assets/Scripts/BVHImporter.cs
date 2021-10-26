@@ -70,12 +70,34 @@ public class BVHImporter : MonoBehaviour
                     }
                     else if (inputs[0] == "End")
                     {
-                        jointName = jointNames[jointNames.Count -1] + " End Site";
+                        jointName = jointNames[jointNames.Count - 1] + " End Site";
                         bvh.AddJoint(jointName, jointNames[jointNames.Count - 1]);
                     }
                     // 右括號，減少一層
                     else if (inputs[0] == "}")
                         jointNames.RemoveAt(jointNames.Count - 1);
+                }
+                // Motion
+                // Frames
+                line = reader.ReadLine();
+                line = line.Trim();
+                line = Regex.Replace(line, @"\s+", " ");
+                inputs = line.Split(' ');
+                int frames = Convert.ToInt32(inputs[1]);
+                // Frame Time
+                line = reader.ReadLine();
+                line = line.Trim();
+                line = Regex.Replace(line, @"\s+", " ");
+                inputs = line.Split(' ');
+                bvh.SetFrameTime(Convert.ToSingle(inputs[2]));
+                // Detail frames
+                for (int i = 0; i < frames; i++)
+                {
+                    line = reader.ReadLine();
+                    line = line.Trim();
+                    line = Regex.Replace(line, @"\s+", " ");
+                    inputs = line.Split(' ');
+                    bvh.AddMotionFrame(new List<string>(inputs));
                 }
             }
             else
