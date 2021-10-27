@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7adfb9f5724454847bc499175ea41ed0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - segmentRenderer: {instanceID: 0}
+  - segmentPntOb: {fileID: 8911870193164491271, guid: e8b37941b84cc0748ac1942763567a69, type: 3}
+  - subControlPnt: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

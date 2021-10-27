@@ -78,7 +78,7 @@ public class ControllPntManager : MonoBehaviour
                     else if (pntControllerID == pntController.yzPlane)
                         clipPlane = new Plane(Vector3.forward, selectedOb.transform.position);
                     else if (pntControllerID == pntController.xzPlane)
-                        clipPlane = new Plane(Vector3.forward, selectedOb.transform.position);
+                        clipPlane = new Plane(Vector3.left, selectedOb.transform.position);
                     else if (pntControllerID == pntController.xyPlane)
                         clipPlane = new Plane(Vector3.up, selectedOb.transform.position);
 

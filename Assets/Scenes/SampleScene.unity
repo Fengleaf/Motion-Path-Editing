@@ -1124,6 +1124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1189984504}
+  - component: {fileID: 1189984505}
   m_Layer: 0
   m_Name: PathManager
   m_TagString: Untagged
@@ -1145,6 +1146,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1189984505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189984503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9156de3869771874485c031ce399ed88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  segments: []
+  controllPntObs: []
+  controllPntOb: {fileID: 8911870193164491271, guid: e8b37941b84cc0748ac1942763567a69, type: 3}
+  addPntBut: {fileID: 1942684450}
+  minusPntBut: {fileID: 1371639284}
+  pntCountTxt: {fileID: 338213356}
+  lineSegment: {fileID: 3656078609793375232, guid: 18db8a4e2a507fe4db9bfbfea0a70bf3, type: 3}
 --- !u!1 &1319983054
 GameObject:
   m_ObjectHideFlags: 0
