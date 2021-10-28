@@ -6,6 +6,27 @@ using System.Linq;
 
 public class PathManager : MonoBehaviour
 {
+    private static object lockObject = new object();
+    private static PathManager instance;
+    public static PathManager Instance
+    {
+        get
+        {
+            lock(lockObject)
+            {
+                if (instance == null)
+                    instance = FindObjectOfType<PathManager>();
+                if (instance == null)
+                {
+                    GameObject singletonObject = new GameObject();
+                    instance = singletonObject.AddComponent<PathManager>();
+                    singletonObject.name = "PathManager";
+                }
+            }
+            return instance;
+        }
+    }
+
     public List<LineSegment> segments;
     public List<GameObject> controllPntObs;
     public GameObject controllPntOb;
@@ -13,6 +34,7 @@ public class PathManager : MonoBehaviour
     public Button minusPntBut;
     public Text pntCountTxt;
     public LineSegment lineSegment;
+
     // Start is called before the first frame update
     void Start()
     {

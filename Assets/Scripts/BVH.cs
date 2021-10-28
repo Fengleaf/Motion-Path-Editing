@@ -96,6 +96,7 @@ public class BVH : MonoBehaviour
     {
         while (true)
         {
+            Debug.Log(PathManager.Instance);
             // 每一個 frame
             for (int i = 0; i < frameNumber; i++)
             {
@@ -103,15 +104,7 @@ public class BVH : MonoBehaviour
                 // 每一個 joint
                 for (int j = 0; j < joints.Count; j++)
                 {
-                    try
-                    {
-                        joints[j].UpdateToFrame(i);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError("frame = " + i + ", joint = " + joints[j].name);
-                    }
-
+                    joints[j].UpdateToFrame(i);
                 }
                 for (int j = 0; j < joints.Count; j++)
                 {
