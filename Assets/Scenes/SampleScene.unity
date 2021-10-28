@@ -1065,7 +1065,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segments: []
   controllPntObs: []
+  subControllPntObs: []
   controllPntOb: {fileID: 8911870193164491271, guid: e8b37941b84cc0748ac1942763567a69, type: 3}
+  subControllPntOb: {fileID: 1518661768631932632, guid: 46a3b9d2c2b579b4bab0830a279ad9c8, type: 3}
   addPntBut: {fileID: 1942684450}
   minusPntBut: {fileID: 1371639284}
   pntCountTxt: {fileID: 338213356}
