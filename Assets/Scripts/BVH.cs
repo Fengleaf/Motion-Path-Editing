@@ -16,6 +16,10 @@ public class BVH : MonoBehaviour
     private int frameNumber;
     private float frameTime;
 
+    private List<Vector3> pathPoints;
+
+    private Coroutine runCoroutine;
+
     private void Awake()
     {
         joints = new List<BVHJoint>();
@@ -82,37 +86,61 @@ public class BVH : MonoBehaviour
         frameNumber++;
     }
 
-    public void SetPath()
-    {
-
-    }
-
     public void Run()
     {
-        StartCoroutine(RunCoroutine());
+        if (runCoroutine != null)
+            StopCoroutine(runCoroutine);
+        pathPoints = new List<Vector3>();
+        foreach (LineSegment segment in PathManager.Instance.segments)
+        {
+            for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
+                pathPoints.Add(segment.segmentRenderer.GetPosition(i));
+        }
+        runCoroutine = StartCoroutine(RunCoroutine());
     }
 
     private IEnumerator RunCoroutine()
     {
+        int pathIndex = 0;
+        int frameIndex = 0;
         while (true)
         {
-            Debug.Log(PathManager.Instance);
-            // 每一個 frame
-            for (int i = 0; i < frameNumber; i++)
-            {
-                GameManager.Instance.frameText.text = (i + 1).ToString();
-                // 每一個 joint
-                for (int j = 0; j < joints.Count; j++)
-                {
-                    joints[j].UpdateToFrame(i);
-                }
-                for (int j = 0; j < joints.Count; j++)
-                {
-                    joints[j].UpdateAllBone();
-                }
-                yield return new WaitForSeconds(frameTime);
-            }
-            yield return null;
+            UpdateFrame((frameIndex++) % frameNumber);
+            UpdatePosition((pathIndex++) % pathPoints.Count);
+            yield return new WaitForSeconds(frameTime);
+        }
+    }
+
+    private void UpdateFrame(int frameIndex)
+    {
+        GameManager.Instance.frameText.text = (frameIndex + 1).ToString();
+        // 每一個 joint
+        for (int j = 0; j < joints.Count; j++)
+        {
+            joints[j].UpdateToFrame(frameIndex);
+        }
+        // Hips 不要動
+        joints[0].transform.localPosition = Vector3.zero;
+        for (int j = 0; j < joints.Count; j++)
+        {
+            joints[j].UpdateAllBone();
+        }
+    }
+
+    private void UpdatePosition(int pathIndex)
+    {
+        // 隨著路徑移動
+        transform.position = pathPoints[pathIndex];
+        // 面向切線方向
+        if (pathIndex < pathPoints.Count - 1)
+        {
+            // A 點到 B 點的向量
+            Vector3 vector = pathPoints[pathIndex + 1] - pathPoints[pathIndex];
+            // 外積
+            Quaternion rotation = Quaternion.Euler(0, 45, 0);
+            Vector3 rotateVector = rotation * vector;
+            Vector3 cross = Vector3.Cross(vector, rotateVector);
+            transform.LookAt(transform.position + vector, cross);
         }
     }
 }

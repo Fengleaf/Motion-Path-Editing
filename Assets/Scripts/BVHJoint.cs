@@ -73,7 +73,7 @@ public class BVHJoint : MonoBehaviour
                 position.y = pair.Value;
             else if (channel == "Zposition")
                 position.z = pair.Value;
-            else if (channel == "Zrotation")
+            if (channel == "Zrotation")
                 rotation.z = pair.Value;
             else if (channel == "Xrotation")
                 rotation.x = pair.Value;
