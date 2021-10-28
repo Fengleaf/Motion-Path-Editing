@@ -31,7 +31,10 @@ public class PathManager : MonoBehaviour
 
     public List<LineSegment> segments;
     public List<GameObject> controllPntObs;
+    public List<GameObject> subControllPntObs;
+    private List<Vector3> controllPnts;
     public GameObject controllPntOb;
+    public GameObject subControllPntOb;
     public Button addPntBut;
     public Button minusPntBut;
     public Text pntCountTxt;
@@ -42,22 +45,30 @@ public class PathManager : MonoBehaviour
     {
         Vector3 point = Vector3.zero;
         controllPntObs = new List<GameObject>();
+        subControllPntObs = new List<GameObject>();
+        controllPnts = new List<Vector3>();
         segments = new List<LineSegment>();
         addPntBut.onClick.AddListener(addPointButListener);
         minusPntBut.onClick.AddListener(minusPointButListener);
         controllPntObs.Add(newControllPntOb(point));
+        subControllPntObs.Add(newSubControllPntOb(point, 3, controllPntObs[controllPntObs.Count - 1].transform));
         point.z += 10;
         controllPntObs.Add(newControllPntOb(point));
+        subControllPntObs.Add(newSubControllPntOb(point, -3, controllPntObs[controllPntObs.Count - 1].transform));
         addSegment();
     }
 
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < segments.Count; i++)
+        segments[0].calculateBezierCurve(controllPntObs[0].transform.position, 
+            controllPntObs[0 + 1].transform.position, subControllPntObs[0].transform.position, subControllPntObs[1].transform.position);
+        for (int i = 1; i < segments.Count; i++)
         {
             Vector3 startVert = controllPntObs[i].transform.position;
             Vector3 endVert = controllPntObs[i + 1].transform.position;
+            Vector3 subControllPntOp = startVert - subControllPntObs[i].transform.localPosition;
+
             //segments[i].UpdateVert(startVert, endVert);
             int index = i - 1;
             if (index < 0)
@@ -65,7 +76,7 @@ public class PathManager : MonoBehaviour
             int indexNext = i + 2;
             if (indexNext > segments.Count)
                 indexNext = i + 1;
-            segments[i].calculateCurve(controllPntObs[index].transform.position, startVert, endVert, controllPntObs[indexNext].transform.position);
+            segments[i].calculateBezierCurve(startVert, endVert, subControllPntOp, subControllPntObs[i + 1].transform.position);
         }
     }
 
@@ -78,6 +89,15 @@ public class PathManager : MonoBehaviour
     {
         GameObject newPntOb = Instantiate(controllPntOb, transform);
         newPntOb.transform.position = pos;
+        controllPnts.Add(pos);
+        return newPntOb;
+    }
+    private GameObject newSubControllPntOb(Vector3 pos, int offset, Transform parent)
+    {
+        GameObject newPntOb = Instantiate(subControllPntOb, parent);
+        Vector3 newPos = pos;
+        newPos.z = pos.z + offset;
+        newPntOb.transform.position = newPos;
         return newPntOb;
     }
 
@@ -93,6 +113,7 @@ public class PathManager : MonoBehaviour
         Vector3 newPnt = controllPntObs[controllPntObs.Count - 1].gameObject.transform.position;
         newPnt.z += 10;
         controllPntObs.Add(newControllPntOb(newPnt));
+        subControllPntObs.Add(newSubControllPntOb(newPnt, -3, controllPntObs[controllPntObs.Count - 1].transform));
         addSegment();
         pntCountTxt.text = (segments.Count + 1).ToString();
     }
@@ -102,6 +123,8 @@ public class PathManager : MonoBehaviour
         {
             Destroy(controllPntObs[controllPntObs.Count - 1].gameObject);
             controllPntObs.RemoveAt(controllPntObs.Count - 1);
+            subControllPntObs.RemoveAt(controllPntObs.Count - 1);
+            controllPnts.RemoveAt(controllPnts.Count - 1);
             Destroy(segments[segments.Count - 1].gameObject);
             segments.RemoveAt(segments.Count - 1);
             pntCountTxt.text = (segments.Count + 1).ToString();

@@ -44,7 +44,7 @@ public class ControllPntManager : MonoBehaviour
                     Transform objectHit = hit.transform;
                     if (objectHit.CompareTag("ControllPnt"))
                     {
-                        Debug.Log(objectHit.gameObject.name);
+                        Debug.Log("1st Hit¡G" + objectHit.gameObject.name);
                         tmpInGamePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity, objectHit);
                         tmpInGamePivot.transform.localPosition = Vector3.zero;
                         selectedOb = objectHit.gameObject;

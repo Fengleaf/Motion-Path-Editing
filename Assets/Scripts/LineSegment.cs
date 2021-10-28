@@ -39,6 +39,8 @@ public class LineSegment : MonoBehaviour
         Vector3 p1 = nowPntEnd;
         Vector3 m0 = (nowPntEnd - prePntEnd) / ((segmentIndex + 1) - (segmentIndex - 1));
         Vector3 m1 = (nextPntStart - nowPntStart) / ((segmentIndex + 1 + 1) - (segmentIndex + 1 - 1));
+        FEPoint[0] = nowPntStart;
+        FEPoint[1] = nowPntEnd;
 
         List<Vector3> pnts = new List<Vector3>();
         float omt = 1f;
@@ -53,6 +55,29 @@ public class LineSegment : MonoBehaviour
         segmentRenderer.positionCount = pnts.Count;
         segmentRenderer.SetPositions(pnts.ToArray());
         Debug.Log("LEN@" + segmentRenderer.positionCount);
+    }
+
+    public void calculateBezierCurve(Vector3 startPnt, Vector3 endPnt, Vector3 subPnt1, Vector3 subPnt2)
+    {
+        Vector3 p0 = startPnt; //ÀY
+        Vector3 p1 = subPnt1; //Control point
+        Vector3 p2 = subPnt2; //Control point
+        Vector3 p3 = endPnt; //§À
+        FEPoint[0] = startPnt;
+        FEPoint[1] = endPnt;
+
+        List<Vector3> pnts = new List<Vector3>();
+        float omt = 1f;
+        for (int i = 50; i >= 0; i--)
+        {
+            omt = i / 50f;
+            Vector3 currentPosition = p0 * Mathf.Pow(omt, 3) + p1 * (3 * omt * omt * (1f - omt)) + p2 * (3 * omt * (1f - omt) * (1f - omt)) + p3 * Mathf.Pow((1f - omt), 3);
+            pnts.Add(currentPosition);
+        }
+
+        segmentRenderer.positionCount = pnts.Count;
+        segmentRenderer.SetPositions(pnts.ToArray());
+
     }
 
     private void OnDrawGizmos()
