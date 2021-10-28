@@ -62,7 +62,7 @@ public class PathManager : MonoBehaviour
     void Update()
     {
         segments[0].calculateBezierCurve(controllPntObs[0].transform.position, 
-            controllPntObs[0 + 1].transform.position, subControllPntObs[0].transform.position, subControllPntObs[1].transform.position);
+            controllPntObs[1].transform.position, subControllPntObs[0].transform.position, subControllPntObs[1].transform.position);
         for (int i = 1; i < segments.Count; i++)
         {
             Vector3 startVert = controllPntObs[i].transform.position;
@@ -123,7 +123,8 @@ public class PathManager : MonoBehaviour
         {
             Destroy(controllPntObs[controllPntObs.Count - 1].gameObject);
             controllPntObs.RemoveAt(controllPntObs.Count - 1);
-            subControllPntObs.RemoveAt(controllPntObs.Count - 1);
+            Destroy(subControllPntObs[subControllPntObs.Count - 1].gameObject);
+            subControllPntObs.RemoveAt(subControllPntObs.Count - 1);
             controllPnts.RemoveAt(controllPnts.Count - 1);
             Destroy(segments[segments.Count - 1].gameObject);
             segments.RemoveAt(segments.Count - 1);
