@@ -129,6 +129,7 @@ public class PathManager : MonoBehaviour
             Destroy(segments[segments.Count - 1].gameObject);
             segments.RemoveAt(segments.Count - 1);
             pntCountTxt.text = (segments.Count + 1).ToString();
+
         }
     }
 }
