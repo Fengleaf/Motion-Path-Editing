@@ -1902,9 +1902,9 @@ MonoBehaviour:
   subControllPntObs: []
   controllPntOb: {fileID: 8911870193164491271, guid: e8b37941b84cc0748ac1942763567a69, type: 3}
   subControllPntOb: {fileID: 1518661768631932632, guid: 46a3b9d2c2b579b4bab0830a279ad9c8, type: 3}
-  addPntBut: {fileID: 0}
-  minusPntBut: {fileID: 0}
-  pntCountTxt: {fileID: 0}
+  addPntBut: {fileID: 213555843}
+  minusPntBut: {fileID: 604589374}
+  pntCountTxt: {fileID: 841574985}
   lineSegment: {fileID: 3656078609793375232, guid: 18db8a4e2a507fe4db9bfbfea0a70bf3, type: 3}
 --- !u!4 &1048432944
 Transform:
