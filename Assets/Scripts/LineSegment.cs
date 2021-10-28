@@ -32,4 +32,37 @@ public class LineSegment : MonoBehaviour
         segmentIndex = index;
         segmentRenderer.SetPositions(FEPoint);
     }
+
+    public void calculateCurve(Vector3 prePntEnd, Vector3 nowPntStart, Vector3 nowPntEnd, Vector3 nextPntStart)
+    {
+        Vector3 p0 = nowPntStart;
+        Vector3 p1 = nowPntEnd;
+        Vector3 m0 = (nowPntEnd - prePntEnd) / ((segmentIndex + 1) - (segmentIndex - 1));
+        Vector3 m1 = (nextPntStart - nowPntStart) / ((segmentIndex + 1 + 1) - (segmentIndex + 1 - 1));
+
+        List<Vector3> pnts = new List<Vector3>();
+        float omt = 1f;
+        for (int i = 50; i >= 0; i--)
+        {
+            omt = i / 50f;
+            Vector3 currentPosition = p0 * Mathf.Pow(omt, 3) + (p0 + m0 / 3) * (3 * omt * omt * (1f-omt)) + (p1 - m1 / 3) * (3 * omt * (1f - omt) * (1f - omt)) + p1 * Mathf.Pow((1f - omt), 3);
+            pnts.Add(currentPosition);
+        }
+        
+        Debug.Log("LEN" + pnts.Count.ToString());
+        segmentRenderer.positionCount = pnts.Count;
+        segmentRenderer.SetPositions(pnts.ToArray());
+        Debug.Log("LEN@" + segmentRenderer.positionCount);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3[] pnts = new Vector3[51];
+        int a = segmentRenderer.GetPositions(pnts);
+        for (int i = 0; i < a; i++)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(pnts[i], 0.05f);
+        }
+    }
 }

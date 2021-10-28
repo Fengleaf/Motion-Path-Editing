@@ -58,7 +58,14 @@ public class PathManager : MonoBehaviour
         {
             Vector3 startVert = controllPntObs[i].transform.position;
             Vector3 endVert = controllPntObs[i + 1].transform.position;
-            segments[i].UpdateVert(startVert, endVert);
+            //segments[i].UpdateVert(startVert, endVert);
+            int index = i - 1;
+            if (index < 0)
+                index = 0;
+            int indexNext = i + 2;
+            if (indexNext > segments.Count)
+                indexNext = i + 1;
+            segments[i].calculateCurve(controllPntObs[index].transform.position, startVert, endVert, controllPntObs[indexNext].transform.position);
         }
     }
 
