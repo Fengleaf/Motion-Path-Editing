@@ -15,15 +15,17 @@ public class PathManager : MonoBehaviour
             lock(lockObject)
             {
                 if (instance == null)
-                    instance = FindObjectOfType<PathManager>();
-                if (instance == null)
                 {
-                    GameObject singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<PathManager>();
-                    singletonObject.name = "PathManager";
+                    instance = FindObjectOfType<PathManager>();
+                    if (instance == null)
+                    {
+                        GameObject singletonObject = new GameObject();
+                        instance = singletonObject.AddComponent<PathManager>();
+                        singletonObject.name = "PathManager";
+                    }
                 }
+                return instance;
             }
-            return instance;
         }
     }
 
