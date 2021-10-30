@@ -9,7 +9,9 @@ public class BVH : MonoBehaviour
     public BVHJoint jointPrefab;
     public GameObject bonePrefab;
 
-    public BVHJoint root;
+    public int interpolationTimes = 5;
+
+    private BVHJoint root;
 
     private List<BVHJoint> joints;
 
@@ -103,21 +105,30 @@ public class BVH : MonoBehaviour
     {
         int pathIndex = 0;
         int frameIndex = 0;
+        float timeDelta = frameTime / Time.deltaTime;
+        float time = 0;
         while (true)
         {
-            UpdateFrame((frameIndex++) % frameNumber);
-            UpdatePosition((pathIndex++) % pathPoints.Count);
-            yield return new WaitForSeconds(frameTime);
+            UpdateFrame(frameIndex % frameNumber, time);
+            UpdatePosition(pathIndex % pathPoints.Count);
+            //yield return new WaitForSeconds(frameTime);
+            time += Time.deltaTime;
+            if (time >= frameTime)
+            {
+                time = 0;
+                frameIndex++;
+                //pathIndex++;
+            }
+            yield return null;
         }
     }
 
-    private void UpdateFrame(int frameIndex)
+    private void UpdateFrame(int frameIndex, float time)
     {
-        //GameManager.Instance.frameText.text = (frameIndex + 1).ToString();
         // 每一個 joint
         for (int j = 0; j < joints.Count; j++)
         {
-            joints[j].UpdateToFrame(frameIndex);
+            joints[j].UpdateToFrame(frameIndex, time);
         }
         // Hips 不要動
         joints[0].transform.localPosition = Vector3.zero;

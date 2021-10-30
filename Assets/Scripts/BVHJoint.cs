@@ -57,13 +57,27 @@ public class BVHJoint : MonoBehaviour
         frames[frameNumber][channelIndex] = value;
     }
 
-    public void UpdateToFrame(int frameNumber)
+    public void UpdateToFrame(int frameNumber, float time)
     {
         if (frameNumber >= frames.Count)
             return;
         Dictionary<int, float> frameData = frames[frameNumber];
+        Vector3 next = GetRotation(frameNumber, frameData);
+        Vector3 position = GetPosition(frameNumber, frameData);
+        Vector3 interpolated = next;
+        // 線性插值
+        if (frameNumber > 0)
+        {
+            Vector3 now = GetRotation(frameNumber - 1, frameData);
+            interpolated = now + time * (next - now);
+        }
+        transform.localPosition = position;
+        transform.localRotation = Quaternion.Euler(interpolated);
+    }
+
+    private Vector3 GetPosition(int frameNumber,Dictionary<int, float> frameData)
+    {
         Vector3 position = transform.localPosition;
-        Vector3 rotation = transform.localRotation.eulerAngles;
         foreach (KeyValuePair<int, float> pair in frameData)
         {
             string channel = channels[pair.Key];
@@ -73,6 +87,16 @@ public class BVHJoint : MonoBehaviour
                 position.y = pair.Value;
             else if (channel == "Zposition")
                 position.z = pair.Value;
+        }
+        return position;
+    }
+
+    private Vector3 GetRotation(int frameNumber, Dictionary<int, float>frameData)
+    {
+        Vector3 rotation = transform.localRotation.eulerAngles;
+        foreach (KeyValuePair<int, float> pair in frameData)
+        {
+            string channel = channels[pair.Key];
             if (channel == "Zrotation")
                 rotation.z = pair.Value;
             else if (channel == "Xrotation")
@@ -80,7 +104,6 @@ public class BVHJoint : MonoBehaviour
             else if (channel == "Yrotation")
                 rotation.y = pair.Value;
         }
-        transform.localPosition = position;
-        transform.localRotation = Quaternion.Euler(rotation);
+        return rotation;
     }
 }
