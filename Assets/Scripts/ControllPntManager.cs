@@ -10,7 +10,7 @@ public class ControllPntManager : MonoBehaviour
     private GameObject inGamePivot;
     private GameObject tmpInGamePivot;
     private GameObject selectedOb;
-    private bool isMoving;
+    public bool IsMoving { get; private set; }
     private pntController pntControllerID;
     private enum pntController
     {
@@ -25,7 +25,7 @@ public class ControllPntManager : MonoBehaviour
         inGamePivot = null;
         tmpInGamePivot = null;
         selectedOb = null;
-        isMoving = false;
+        IsMoving = false;
         pntControllerID = pntController.Pnt;
     }
 
@@ -44,7 +44,7 @@ public class ControllPntManager : MonoBehaviour
                     Transform objectHit = hit.transform;
                     if (objectHit.CompareTag("ControllPnt"))
                     {
-                        Debug.Log("1st Hit¡G" + objectHit.gameObject.name);
+                        Debug.Log("1st Hitï¼š" + objectHit.gameObject.name);
                         tmpInGamePivot = Instantiate(pivot, Vector3.zero, Quaternion.identity, objectHit);
                         tmpInGamePivot.transform.localPosition = Vector3.zero;
                         selectedOb = objectHit.gameObject;
@@ -59,7 +59,7 @@ public class ControllPntManager : MonoBehaviour
         }
         else
         {
-            if (isMoving)
+            if (IsMoving)
             {
                 // Object already being drag
                 if (Input.GetMouseButton(0))
@@ -71,7 +71,7 @@ public class ControllPntManager : MonoBehaviour
                     //Debug.Log("Moving!!" + worldPosition);
                     //Debug.DrawLine(Camera.main.transform.position, worldPosition, Color.green, 5f);
                     //worldPosition.y = selectedOb.transform.position.y;
-                    Debug.Log("ID¡G" + pntControllerID);
+                    Debug.Log("IDï¼š" + pntControllerID);
                     float enter = 50f;
                     if (pntControllerID == pntController.Pnt)
                         clipPlane = new Plane(Vector3.up, selectedOb.transform.position);
@@ -107,7 +107,7 @@ public class ControllPntManager : MonoBehaviour
                 }
                 else
                 {
-                    isMoving = false;
+                    IsMoving = false;
                 }
             }
             else
@@ -120,7 +120,7 @@ public class ControllPntManager : MonoBehaviour
                     bool isHit = Physics.Raycast(ray, out hit);
                     Transform objectHit = hit.transform;
                     if (isHit)
-                        Debug.Log("Hit¡G" + objectHit.gameObject.name);
+                        Debug.Log("Hitï¼š" + objectHit.gameObject.name);
                         //Debug.DrawLine(Camera.main.transform.position, hit.point, Color.green, 5f);
                     if (isHit && objectHit.CompareTag("ControllPnt"))
                     {
@@ -128,7 +128,7 @@ public class ControllPntManager : MonoBehaviour
                         if (objectHit.gameObject == selectedOb)
                         {
                             // Dragging object
-                            isMoving = true;
+                            IsMoving = true;
                             
                         }
                         else
@@ -149,7 +149,7 @@ public class ControllPntManager : MonoBehaviour
                             pntControllerID = pntController.xyPlane;
                         else
                             pntControllerID = pntController.Pnt;
-                        isMoving = true;
+                        IsMoving = true;
                     }
                     else
                     {

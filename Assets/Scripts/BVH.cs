@@ -113,7 +113,7 @@ public class BVH : MonoBehaviour
 
     private void UpdateFrame(int frameIndex)
     {
-        GameManager.Instance.frameText.text = (frameIndex + 1).ToString();
+        //GameManager.Instance.frameText.text = (frameIndex + 1).ToString();
         // 每一個 joint
         for (int j = 0; j < joints.Count; j++)
         {

@@ -16,6 +16,8 @@ public class BVHImporter : MonoBehaviour
     public void ImportBVH()
     {
         string fileName = EditorUtility.OpenFilePanel("匯入BVH", Path.Combine(Application.streamingAssetsPath, "BVHs"), "bvh");
+        if (fileName == "")
+            return;
         StartCoroutine(ParseBVH(fileName));
     }
 
