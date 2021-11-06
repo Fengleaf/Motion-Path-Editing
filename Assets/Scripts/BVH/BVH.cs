@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class BVH : MonoBehaviour
 {
+    public PathManager pathManager;
+
     public BVHJoint jointPrefab;
     public GameObject bonePrefab;
 
@@ -96,11 +98,12 @@ public class BVH : MonoBehaviour
         if (runPositionCoroutine != null)
             StopCoroutine(runPositionCoroutine);
         pathPoints = new List<Vector3>();
-        foreach (LineSegment segment in PathManager.Instance.segments)
-        {
-            for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
-                pathPoints.Add(segment.segmentRenderer.GetPosition(i));
-        }
+        //foreach (LineSegment segment in PathManager.Instance.segments)
+        //{
+        //    for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
+        //        pathPoints.Add(segment.segmentRenderer.GetPosition(i));
+        //}
+        pathPoints = pathManager.GetPath();
         LoadPath(pathPoints);
         runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
         //runPositionCoroutine = StartCoroutine(RunPositionCoroutine());

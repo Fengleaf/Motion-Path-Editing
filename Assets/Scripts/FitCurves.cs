@@ -4,15 +4,9 @@ using System.Drawing;
 //using System.Numerics;
 using UnityEngine;
 
-/*
-An Algorithm for Automatically Fitting Digitized Curves
-by Philip J. Schneider
-from "Graphics Gems", Academic Press, 1990
-*/
 public static class FitCurves
 {
     /*  Fit the Bezier curves */
-
     private const int MAXPOINTS = 10000;
 
     public static Vector3[] GetBezierFitCurve(Vector3[] d, double error)

@@ -34,15 +34,15 @@ public class CameraMovement : MonoBehaviour
         if (wheel != 0)
         {
             Vector3 vector = transform.position;
-            vector += transform.forward * wheel * speed;
+            vector += transform.forward * wheel * speed * 5;
             transform.position = vector;
         }
         if (Input.GetMouseButton(2))
         {
-            transform.position += transform.right * mouseX * speed / 2.0f;
-            transform.position += transform.up * mouseY * speed / 2.0f;
+            transform.position -= transform.right * mouseX * speed;
+            transform.position -= transform.up * mouseY * speed;
         }
-        if (Input.GetMouseButton(0) && !controllPntManager.IsMoving)
+        if (Input.GetMouseButton(1) && !controllPntManager.IsMoving)
         {
             //根據滑鼠的移動,獲取相機旋轉的角度
             cameraRotation.x = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mousesSensity;

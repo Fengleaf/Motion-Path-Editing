@@ -49,8 +49,8 @@ public class PathManager : MonoBehaviour
         subControllPntObs = new List<GameObject>();
         controllPnts = new List<Vector3>();
         segments = new List<LineSegment>();
-        addPntBut.onClick.AddListener(addPointButListener);
-        minusPntBut.onClick.AddListener(minusPointButListener);
+        //addPntBut.onClick.AddListener(addPointButListener);
+        //minusPntBut.onClick.AddListener(minusPointButListener);
         // controllPntObs.Add(newControllPntOb(point));
         // subControllPntObs.Add(newSubControllPntOb(point, 3, controllPntObs[controllPntObs.Count - 1].transform));
         // point.z += 10;
@@ -98,12 +98,25 @@ public class PathManager : MonoBehaviour
         subControllPntObs.Add(newSubControllPntOb(result[1], 0, controllPntObs[controllPntObs.Count - 1].transform));
         controllPntObs.Add(newControllPntOb(result[3]));
         subControllPntObs.Add(newSubControllPntOb(result[2], 0, controllPntObs[controllPntObs.Count - 1].transform));
-        addSegment(pnts.Count);
+        addSegment(pnts.Count, pnts, result[1], result[2]);
     }
 
     public void updateSegment()
     {
 
+    }
+
+    public List<Vector3> GetPath()
+    {
+        Vector3[] fitPnts = new Vector3[segments[0].segmentRenderer.positionCount];
+        segments[0].segmentRenderer.GetPositions(fitPnts);
+        Vector3[] oriFitPnts = segments[0].oriFitPnts.ToArray();
+        List<Vector3> newPnts = new List<Vector3>();
+        for (int i = 0; i < oriFitPnts.Length; i++)
+        {
+           newPnts.Add(fitPnts[i] -  oriFitPnts[i] + segments[0].oriPnts[i]);
+        }
+        return newPnts; 
     }
 
     private GameObject newControllPntOb(Vector3 pos)
@@ -122,11 +135,11 @@ public class PathManager : MonoBehaviour
         return newPntOb;
     }
 
-    private void addSegment(int segmentPntCount)
+    private void addSegment(int segmentPntCount, List<Vector3> oriPnts, Vector3 subPnt0, Vector3 subPnt1)
     {
         segments.Add(Instantiate(lineSegment, transform));
         segments[segments.Count - 1].Initialize(controllPntObs[controllPntObs.Count - 2].gameObject.transform.position, 
-            controllPntObs[controllPntObs.Count - 1].gameObject.transform.position, segments.Count, segmentPntCount);
+            controllPntObs[controllPntObs.Count - 1].gameObject.transform.position, segments.Count, segmentPntCount, oriPnts, subPnt0, subPnt1);
     }
 
     public void addPointButListener()
@@ -135,7 +148,7 @@ public class PathManager : MonoBehaviour
         newPnt.z += 10;
         controllPntObs.Add(newControllPntOb(newPnt));
         subControllPntObs.Add(newSubControllPntOb(newPnt, -3, controllPntObs[controllPntObs.Count - 1].transform));
-        addSegment(50);
+        //addSegment(50);
         pntCountTxt.text = (segments.Count + 1).ToString();
     }
     public void minusPointButListener()

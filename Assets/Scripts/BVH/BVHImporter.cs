@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class BVHImporter : MonoBehaviour
 {
+    public PathManager pathManagerPrefab;
+
     public BVH bvhPrefab;
 
     public GameObject BonePrefab;
@@ -106,7 +108,10 @@ public class BVHImporter : MonoBehaviour
                 List<Vector3> path = bvh.GetAllPath();
                 // TODO: 畫出路徑點然後找出fit這些點的曲線
                 // bvh.LoadPath(List<Vector3> newPath) 可以更新點
-                PathManager.Instance.SetBezierFitPath(path);
+                PathManager aPathManager = Instantiate(pathManagerPrefab);
+                yield return null;
+                aPathManager.SetBezierFitPath(path);
+                bvh.pathManager = aPathManager;
             }
             else
             {

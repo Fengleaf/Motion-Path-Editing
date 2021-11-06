@@ -6,6 +6,8 @@ public class LineSegment : MonoBehaviour
 {
     public LineRenderer segmentRenderer;
     public Vector3[] FEPoint = new Vector3[2];
+    public List<Vector3> oriPnts;
+    public List<Vector3> oriFitPnts;
     public int segmentIndex;
     public int segmentPntCount = 0;
     private List<Vector3> segmentPnts;
@@ -26,13 +28,19 @@ public class LineSegment : MonoBehaviour
         segmentRenderer.SetPositions(FEPoint);
     }
 
-    public void Initialize(Vector3 startPnt, Vector3 endPnt, int index, int pntCount)
+    public void Initialize(Vector3 startPnt, Vector3 endPnt, int index, int pntCount, List<Vector3> originPnts, Vector3 subPnt0, Vector3 subPnt1)
     {
         FEPoint[0] = startPnt;
         FEPoint[1] = endPnt;
+        oriPnts = new List<Vector3>(originPnts);
         segmentPntCount = pntCount;
         segmentIndex = index;
         segmentRenderer.SetPositions(FEPoint);
+        calculateBezierCurve(startPnt, endPnt, subPnt0, subPnt1);
+        Vector3[] fitPntArr = new Vector3[oriPnts.Count];
+        segmentRenderer.GetPositions(fitPntArr);
+        oriFitPnts = new List<Vector3>(fitPntArr);
+
     }
 
     public void calculateCurve(Vector3 prePntEnd, Vector3 nowPntStart, Vector3 nowPntEnd, Vector3 nextPntStart)
