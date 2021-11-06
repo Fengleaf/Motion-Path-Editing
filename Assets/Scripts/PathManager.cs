@@ -51,12 +51,12 @@ public class PathManager : MonoBehaviour
         segments = new List<LineSegment>();
         addPntBut.onClick.AddListener(addPointButListener);
         minusPntBut.onClick.AddListener(minusPointButListener);
-        controllPntObs.Add(newControllPntOb(point));
-        subControllPntObs.Add(newSubControllPntOb(point, 3, controllPntObs[controllPntObs.Count - 1].transform));
-        point.z += 10;
-        controllPntObs.Add(newControllPntOb(point));
-        subControllPntObs.Add(newSubControllPntOb(point, -3, controllPntObs[controllPntObs.Count - 1].transform));
-        addSegment();
+        // controllPntObs.Add(newControllPntOb(point));
+        // subControllPntObs.Add(newSubControllPntOb(point, 3, controllPntObs[controllPntObs.Count - 1].transform));
+        // point.z += 10;
+        // controllPntObs.Add(newControllPntOb(point));
+        // subControllPntObs.Add(newSubControllPntOb(point, -3, controllPntObs[controllPntObs.Count - 1].transform));
+        // addSegment();
     }
 
     // Update is called once per frame
@@ -89,6 +89,10 @@ public class PathManager : MonoBehaviour
         //controllPnts = new List<Vector3>();
         //segments = new List<LineSegment>();
         Vector3[] result = FitCurves.GetBezierFitCurve(pnts.ToArray(), bezierErrorPar);
+        for (int i = 0; i < result.Length; i++)
+        {
+            result[i] = new Vector3(result[i].x, 0, result[i].z);
+        }
         controllPntObs.Add(newControllPntOb(result[0]));
         subControllPntObs.Add(newSubControllPntOb(result[1], 0, controllPntObs[controllPntObs.Count - 1].transform));
         controllPntObs.Add(newControllPntOb(result[3]));
