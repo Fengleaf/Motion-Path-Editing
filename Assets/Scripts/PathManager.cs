@@ -135,7 +135,7 @@ public class PathManager : MonoBehaviour
         newPnt.z += 10;
         controllPntObs.Add(newControllPntOb(newPnt));
         subControllPntObs.Add(newSubControllPntOb(newPnt, -3, controllPntObs[controllPntObs.Count - 1].transform));
-        addSegment();
+        addSegment(50);
         pntCountTxt.text = (segments.Count + 1).ToString();
     }
     public void minusPointButListener()

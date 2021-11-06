@@ -101,6 +101,7 @@ public class BVH : MonoBehaviour
             for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
                 pathPoints.Add(segment.segmentRenderer.GetPosition(i));
         }
+        LoadPath(pathPoints);
         runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
         //runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
     }

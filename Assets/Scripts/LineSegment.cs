@@ -61,10 +61,10 @@ public class LineSegment : MonoBehaviour
 
     public void calculateBezierCurve(Vector3 startPnt, Vector3 endPnt, Vector3 subPnt1, Vector3 subPnt2)
     {
-        Vector3 p0 = startPnt; //ÀY
+        Vector3 p0 = startPnt; //é ­
         Vector3 p1 = subPnt1; //Control point
         Vector3 p2 = subPnt2; //Control point
-        Vector3 p3 = endPnt; //§À
+        Vector3 p3 = endPnt; //å°¾
         FEPoint[0] = startPnt;
         FEPoint[1] = endPnt;
 
@@ -84,12 +84,12 @@ public class LineSegment : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Vector3[] pnts = new Vector3[51];
-        int a = segmentRenderer.GetPositions(pnts);
-        for (int i = 0; i < a; i++)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(pnts[i], 0.05f);
-        }
+        //Vector3[] pnts = new Vector3[51];
+        //int a = segmentRenderer.GetPositions(pnts);
+        //for (int i = 0; i < a; i++)
+        //{
+        //    Gizmos.color = Color.green;
+        //    Gizmos.DrawSphere(pnts[i], 0.05f);
+        //}
     }
 }
