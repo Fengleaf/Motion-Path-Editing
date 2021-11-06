@@ -39,6 +39,7 @@ public class PathManager : MonoBehaviour
     public Button minusPntBut;
     public Text pntCountTxt;
     public LineSegment lineSegment;
+    public double bezierErrorPar = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -78,6 +79,21 @@ public class PathManager : MonoBehaviour
                 indexNext = i + 1;
             segments[i].calculateBezierCurve(startVert, endVert, subControllPntOp, subControllPntObs[i + 1].transform.position);
         }
+    }
+
+    public void SetBezierFitPath(List<Vector3> pnts)
+    {
+        // May need to reset these lists
+        //controllPntObs = new List<GameObject>();
+        //subControllPntObs = new List<GameObject>();
+        //controllPnts = new List<Vector3>();
+        //segments = new List<LineSegment>();
+        Vector3[] result = FitCurves.GetBezierFitCurve(pnts.ToArray(), bezierErrorPar);
+        controllPntObs.Add(newControllPntOb(result[0]));
+        subControllPntObs.Add(newSubControllPntOb(result[1], 0, controllPntObs[controllPntObs.Count - 1].transform));
+        controllPntObs.Add(newControllPntOb(result[3]));
+        subControllPntObs.Add(newSubControllPntOb(result[2], 0, controllPntObs[controllPntObs.Count - 1].transform));
+        addSegment();
     }
 
     public void updateSegment()
