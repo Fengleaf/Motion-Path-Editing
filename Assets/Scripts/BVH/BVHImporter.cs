@@ -101,6 +101,11 @@ public class BVHImporter : MonoBehaviour
                     inputs = line.Split(' ');
                     bvh.AddMotionFrame(new List<string>(inputs));
                 }
+
+                // Hips 的所有路徑
+                List<Vector3> path = bvh.GetAllPath();
+                // TODO: 畫出路徑點然後找出fit這些點的曲線
+                // bvh.LoadPath(List<Vector3> newPath) 可以更新點
             }
             else
             {

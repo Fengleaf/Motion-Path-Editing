@@ -19,4 +19,14 @@ public class GameManager : MonoBehaviour
         foreach (BVH bvh in bvhs)
             bvh.Run();
     }
+    public void Test(int index)
+    {
+        BVH bvh = new List<BVH>(FindObjectsOfType<BVH>())[index];
+        List<Vector3> path = bvh.GetAllPath();
+        for (int i = 0; i < path.Count; i++)
+        {
+            GameObject point = new GameObject(i.ToString());
+            point.transform.position = path[i];
+        }
+    }
 }

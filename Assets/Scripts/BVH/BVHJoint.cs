@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class BVHJoint : MonoBehaviour
 {
+    public const string XPosition = "Xposition";
+    public const string YPosition = "Yposition";
+    public const string ZPosition = "Zposition";
+
     public BVHJoint parentJoint;
 
     public List<string> channels = new List<string>();
@@ -62,20 +66,20 @@ public class BVHJoint : MonoBehaviour
         if (frameNumber >= frames.Count)
             return;
         Dictionary<int, float> frameData = frames[frameNumber];
-        Vector3 next = GetRotation(frameNumber, frameData);
+        Vector3 next = GetRotation(frameNumber, frameData).eulerAngles;
         Vector3 position = GetPosition(frameNumber, frameData);
         Vector3 interpolated = next;
         // 線性插值
         if (frameNumber > 0)
         {
-            Vector3 now = GetRotation(frameNumber - 1, frameData);
+            Vector3 now = GetRotation(frameNumber - 1, frameData).eulerAngles;
             interpolated = now + time * (next - now);
         }
         transform.localPosition = position;
         transform.localRotation = Quaternion.Euler(interpolated);
     }
 
-    private Vector3 GetPosition(int frameNumber,Dictionary<int, float> frameData)
+    public Vector3 GetPosition(int frameNumber, Dictionary<int, float> frameData)
     {
         Vector3 position = transform.localPosition;
         foreach (KeyValuePair<int, float> pair in frameData)
@@ -91,19 +95,61 @@ public class BVHJoint : MonoBehaviour
         return position;
     }
 
-    private Vector3 GetRotation(int frameNumber, Dictionary<int, float>frameData)
+    public Vector3 GetPosition(int frameNumber)
     {
-        Vector3 rotation = transform.localRotation.eulerAngles;
-        foreach (KeyValuePair<int, float> pair in frameData)
+        Vector3 position = transform.localPosition;
+        foreach (KeyValuePair<int, float> pair in frames[frameNumber])
         {
             string channel = channels[pair.Key];
-            if (channel == "Zrotation")
-                rotation.z = pair.Value;
-            else if (channel == "Xrotation")
-                rotation.x = pair.Value;
-            else if (channel == "Yrotation")
-                rotation.y = pair.Value;
+            if (channel == "Xposition")
+                position.x = pair.Value;
+            else if (channel == "Yposition")
+                position.y = pair.Value;
+            else if (channel == "Zposition")
+                position.z = pair.Value;
+        }
+        return position;
+    }
+
+    public Quaternion GetRotation(int frameNumber, Dictionary<int, float> frameData)
+    {
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+
+        for (int i = 0; i < channels.Count; i++)
+        {
+            string channel = channels[i];
+            float value = frameData[i];
+            if (i == 0)
+            {
+                if (channel == "Zrotation")
+                    //rotation.z = value;
+                    rotation = Quaternion.Euler(0, 0, value);
+                else if (channel == "Xrotation")
+                    //rotation.x = value;
+                    rotation = Quaternion.Euler(value, 0, 0);
+                else if (channel == "Yrotation")
+                    //rotation.y = value;
+                    rotation = Quaternion.Euler(0, value, 0);
+            }
+            else
+            {
+                if (channel == "Zrotation")
+                    //rotation.z = value;
+                    rotation *= Quaternion.Euler(0, 0, value);
+                else if (channel == "Xrotation")
+                    //rotation.x = value;
+                    rotation *= Quaternion.Euler(value, 0, 0);
+                else if (channel == "Yrotation")
+                    //rotation.y = value;
+                    rotation *= Quaternion.Euler(0, value, 0);
+            }
         }
         return rotation;
+    }
+
+    public void ChangeFrameData(int frameNumber, string channelName, float value)
+    {
+        int channelIndex = channels.IndexOf(channelName);
+        frames[frameNumber][channelIndex] = value;
     }
 }

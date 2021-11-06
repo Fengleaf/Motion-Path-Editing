@@ -102,7 +102,7 @@ public class BVH : MonoBehaviour
                 pathPoints.Add(segment.segmentRenderer.GetPosition(i));
         }
         runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
-        runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
+        //runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
     }
 
     private IEnumerator RunFrameCoroutine()
@@ -153,7 +153,7 @@ public class BVH : MonoBehaviour
             joints[j].UpdateToFrame(frameIndex, time);
         }
         // Hips 不要動
-        joints[0].transform.localPosition = Vector3.zero;
+        //joints[0].transform.localPosition = Vector3.zero;
         for (int j = 0; j < joints.Count; j++)
         {
             joints[j].UpdateAllBone();
@@ -172,6 +172,25 @@ public class BVH : MonoBehaviour
             Vector3 rotateVector = rotation * vector;
             Vector3 cross = Vector3.Cross(vector, rotateVector);
             transform.LookAt(transform.position + vector, cross);
+        }
+    }
+    public List<Vector3> GetAllPath()
+    {
+        List<Vector3> path = new List<Vector3>();
+        for (int i = 0; i < frameNumber; i++)
+        {
+            path.Add(root.GetPosition(i));
+        }
+        return path;
+    }
+
+    public void LoadPath(List<Vector3> newPath)
+    {
+        for (int i = 0; i < newPath.Count; i++)
+        {
+            root.ChangeFrameData(i, BVHJoint.XPosition, newPath[i].x);
+            root.ChangeFrameData(i, BVHJoint.YPosition, newPath[i].y);
+            root.ChangeFrameData(i, BVHJoint.ZPosition, newPath[i].z);
         }
     }
 }
