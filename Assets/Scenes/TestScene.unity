@@ -1525,7 +1525,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -24.2, y: 213.5}
+  m_AnchoredPosition: {x: -26.2, y: 213.5}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &979887806
@@ -2886,6 +2886,7 @@ GameObject:
   - component: {fileID: 1648889217}
   - component: {fileID: 1648889216}
   - component: {fileID: 1648889220}
+  - component: {fileID: 1648889221}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2991,6 +2992,21 @@ MonoBehaviour:
   LeftPanel: {fileID: 1799381415}
   rightVisBut: {fileID: 718596141}
   leftVisBut: {fileID: 1922781761}
+--- !u!114 &1648889221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648889215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a53b15e57dc9440b6f3e9bac6cb384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bvhButtonPrefab: {fileID: 8490845376395940726, guid: 2d8d5c55073832c42b8660a016364811, type: 3}
+  bvhButtonItemContainer: {fileID: 1951604697}
+  visibilityToggle: {fileID: 979887806}
 --- !u!1 &1664133017
 GameObject:
   m_ObjectHideFlags: 0
