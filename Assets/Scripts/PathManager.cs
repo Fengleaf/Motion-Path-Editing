@@ -98,7 +98,7 @@ public class PathManager : MonoBehaviour
         subControllPntObs.Add(newSubControllPntOb(result[1], 0, controllPntObs[controllPntObs.Count - 1].transform));
         controllPntObs.Add(newControllPntOb(result[3]));
         subControllPntObs.Add(newSubControllPntOb(result[2], 0, controllPntObs[controllPntObs.Count - 1].transform));
-        addSegment();
+        addSegment(pnts.Count);
     }
 
     public void updateSegment()
@@ -122,11 +122,11 @@ public class PathManager : MonoBehaviour
         return newPntOb;
     }
 
-    private void addSegment()
+    private void addSegment(int segmentPntCount)
     {
         segments.Add(Instantiate(lineSegment, transform));
         segments[segments.Count - 1].Initialize(controllPntObs[controllPntObs.Count - 2].gameObject.transform.position, 
-            controllPntObs[controllPntObs.Count - 1].gameObject.transform.position, segments.Count);
+            controllPntObs[controllPntObs.Count - 1].gameObject.transform.position, segments.Count, segmentPntCount);
     }
 
     public void addPointButListener()

@@ -7,6 +7,7 @@ public class LineSegment : MonoBehaviour
     public LineRenderer segmentRenderer;
     public Vector3[] FEPoint = new Vector3[2];
     public int segmentIndex;
+    public int segmentPntCount = 0;
     private List<Vector3> segmentPnts;
     public GameObject subControlPnt;
 
@@ -25,10 +26,11 @@ public class LineSegment : MonoBehaviour
         segmentRenderer.SetPositions(FEPoint);
     }
 
-    public void Initialize(Vector3 startPnt, Vector3 endPnt, int index)
+    public void Initialize(Vector3 startPnt, Vector3 endPnt, int index, int pntCount)
     {
         FEPoint[0] = startPnt;
         FEPoint[1] = endPnt;
+        segmentPntCount = pntCount;
         segmentIndex = index;
         segmentRenderer.SetPositions(FEPoint);
     }
@@ -68,9 +70,9 @@ public class LineSegment : MonoBehaviour
 
         List<Vector3> pnts = new List<Vector3>();
         float omt = 1f;
-        for (int i = 50; i >= 0; i--)
+        for (int i = segmentPntCount; i > 0; i--)
         {
-            omt = i / 50f;
+            omt = i / segmentPntCount;
             Vector3 currentPosition = p0 * Mathf.Pow(omt, 3) + p1 * (3 * omt * omt * (1f - omt)) + p2 * (3 * omt * (1f - omt) * (1f - omt)) + p3 * Mathf.Pow((1f - omt), 3);
             pnts.Add(currentPosition);
         }
