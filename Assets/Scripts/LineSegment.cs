@@ -72,7 +72,7 @@ public class LineSegment : MonoBehaviour
         float omt = 1f;
         for (int i = segmentPntCount; i > 0; i--)
         {
-            omt = i / segmentPntCount;
+            omt = i / ((float)segmentPntCount);
             Vector3 currentPosition = p0 * Mathf.Pow(omt, 3) + p1 * (3 * omt * omt * (1f - omt)) + p2 * (3 * omt * (1f - omt) * (1f - omt)) + p3 * Mathf.Pow((1f - omt), 3);
             pnts.Add(currentPosition);
         }
