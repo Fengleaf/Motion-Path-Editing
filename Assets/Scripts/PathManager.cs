@@ -62,8 +62,9 @@ public class PathManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        segments[0].calculateBezierCurve(controllPntObs[0].transform.position, 
-            controllPntObs[1].transform.position, subControllPntObs[0].transform.position, subControllPntObs[1].transform.position);
+        if (segments.Count > 0)
+            segments[0].calculateBezierCurve(controllPntObs[0].transform.position, 
+                controllPntObs[1].transform.position, subControllPntObs[0].transform.position, subControllPntObs[1].transform.position);
         for (int i = 1; i < segments.Count; i++)
         {
             Vector3 startVert = controllPntObs[i].transform.position;
