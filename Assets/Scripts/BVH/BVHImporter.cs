@@ -103,15 +103,14 @@ public class BVHImporter : MonoBehaviour
                     inputs = line.Split(' ');
                     bvh.AddMotionFrame(new List<string>(inputs));
                 }
-
+                bvh.name = fileName.Substring(fileName.LastIndexOf('/') + 1, fileName.IndexOf(".bvh") - fileName.LastIndexOf('/') - 1);
                 // Hips 的所有路徑
                 List<Vector3> path = bvh.GetAllPath();
-                // TODO: 畫出路徑點然後找出fit這些點的曲線
-                // bvh.LoadPath(List<Vector3> newPath) 可以更新點
                 PathManager aPathManager = Instantiate(pathManagerPrefab);
                 yield return null;
                 aPathManager.SetBezierFitPath(path);
                 bvh.pathManager = aPathManager;
+                BVHUIManager.Instance.AddNewBVH(bvh);
             }
             else
             {
