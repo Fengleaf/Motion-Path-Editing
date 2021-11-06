@@ -9,7 +9,7 @@ public class BVH : MonoBehaviour
     public BVHJoint jointPrefab;
     public GameObject bonePrefab;
 
-    public int interpolationTimes = 5;
+    public int MoveSpeed = 5;
 
     private BVHJoint root;
 
@@ -20,7 +20,8 @@ public class BVH : MonoBehaviour
 
     private List<Vector3> pathPoints;
 
-    private Coroutine runCoroutine;
+    private Coroutine runFrameCoroutine;
+    private Coroutine runPositionCoroutine;
 
     private void Awake()
     {
@@ -90,18 +91,21 @@ public class BVH : MonoBehaviour
 
     public void Run()
     {
-        if (runCoroutine != null)
-            StopCoroutine(runCoroutine);
+        if (runFrameCoroutine != null)
+            StopCoroutine(runFrameCoroutine);
+        if (runPositionCoroutine != null)
+            StopCoroutine(runPositionCoroutine);
         pathPoints = new List<Vector3>();
         foreach (LineSegment segment in PathManager.Instance.segments)
         {
             for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
                 pathPoints.Add(segment.segmentRenderer.GetPosition(i));
         }
-        runCoroutine = StartCoroutine(RunCoroutine());
+        runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
+        runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
     }
 
-    private IEnumerator RunCoroutine()
+    private IEnumerator RunFrameCoroutine()
     {
         int pathIndex = 0;
         int frameIndex = 0;
@@ -110,16 +114,34 @@ public class BVH : MonoBehaviour
         while (true)
         {
             UpdateFrame(frameIndex % frameNumber, time);
-            UpdatePosition(pathIndex % pathPoints.Count);
+            //UpdatePosition(pathIndex % pathPoints.Count);
             //yield return new WaitForSeconds(frameTime);
-            time += Time.deltaTime;
-            if (time >= frameTime)
+            time += 1 / (frameTime / Time.deltaTime);
+            Debug.Log(time);
+            if (time >= 1)
             {
                 time = 0;
                 frameIndex++;
                 //pathIndex++;
             }
             yield return null;
+        }
+    }
+
+    private IEnumerator RunPositionCoroutine()
+    {
+        while (true)
+        {
+            for (int i = 0; i < pathPoints.Count - 1; i++)
+            {
+                while (Vector3.Distance(pathPoints[i + 1], transform.position) >= MoveSpeed * Time.deltaTime)
+                {
+                    transform.position += (pathPoints[i + 1] - transform.position).normalized * MoveSpeed * Time.deltaTime;
+                    UpdatePosition(i);
+                    yield return null;
+                }
+            }
+            transform.position = pathPoints[0];
         }
     }
 
@@ -140,8 +162,6 @@ public class BVH : MonoBehaviour
 
     private void UpdatePosition(int pathIndex)
     {
-        // 隨著路徑移動
-        transform.position = pathPoints[pathIndex];
         // 面向切線方向
         if (pathIndex < pathPoints.Count - 1)
         {
