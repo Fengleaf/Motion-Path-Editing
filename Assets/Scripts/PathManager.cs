@@ -91,6 +91,7 @@ public class PathManager : MonoBehaviour
         controllPnts.Clear();
         for (int i = 0; i < segments.Count; i++)
         {
+            segments[i].Destroy();
             segments[i] = null;
         }
         segments.Clear();

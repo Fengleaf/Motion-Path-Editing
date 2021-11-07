@@ -110,4 +110,10 @@ public class LineSegment : MonoBehaviour
         //    Gizmos.DrawSphere(pnts[i], 0.05f);
         //}
     }
+
+    public void Destroy()
+    {
+        Destroy(segmentRenderer);
+        Destroy(subControlPnt);
+    }
 }
