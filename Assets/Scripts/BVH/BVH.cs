@@ -210,14 +210,14 @@ public class BVH : MonoBehaviour
     public void Blend(BVH target)
     {
         int startIndex = frameNumber - 1;
-        List<Vector3> lastPosition = GetFramePosition(startIndex);
+        Dictionary<BVHJoint, Vector3> lastPosition = GetFramePosition(startIndex);
         //List<Vector3> lastRotation = GetFrameRotation(startIndex);
-        List<Vector3> newPosition = target.GetFramePosition(target.frameNumber - 1);
+        Dictionary<BVHJoint, Vector3> newPosition = target.GetFramePosition(0);
         //List<Vector3> newRotation = target.GetFrameRotation(target.frameNumber - 1);
 
-        List<Vector3> offsetPosition = new List<Vector3>();
+        Dictionary<BVHJoint, Vector3> offsetPosition = new Dictionary<BVHJoint, Vector3>();
         for (int i = 0; i < lastPosition.Count && i < newPosition.Count; i++)
-            offsetPosition.Add(lastPosition[i] - newPosition[i]);
+            offsetPosition[joints[i]] = lastPosition[joints[i]] - newPosition[target.joints[i]];
 
         //List<Vector3> offsetRotation = new List<Vector3>();
         //for (int i = 0; i < lastRotation.Count && i < newRotation.Count; i++)
@@ -227,26 +227,36 @@ public class BVH : MonoBehaviour
         {
             for (int j = 0; j < target.joints.Count; j++)
             {
-
+                Dictionary<string, float> datas = new Dictionary<string, float>();
+                Vector3 newPoint = target.joints[j].GetPosition(i);
+                Vector3 offset = offsetPosition[joints[j]];
+                datas[BVHJoint.XPosition] = (newPoint + offset).x;
+                datas[BVHJoint.YPosition] = (newPoint + offset).y;
+                datas[BVHJoint.ZPosition] = (newPoint + offset).z;
+                Vector3 newRotation = target.joints[j].GetRotationData(i);
+                datas[BVHJoint.XRotation] = newRotation.x;
+                datas[BVHJoint.YRotation] = newRotation.y;
+                datas[BVHJoint.ZRotation] = newRotation.z;
+                joints[j].AddFrameData(datas);
             }
         }
         frameNumber += target.frameNumber;
         pathManager.SetBezierFitPath(GetAllPath());
     }
 
-    public List<Vector3> GetFramePosition(int frameIndex)
+    public Dictionary<BVHJoint, Vector3> GetFramePosition(int frameIndex)
     {
-        List<Vector3> position = new List<Vector3>();
+        Dictionary<BVHJoint, Vector3> position = new Dictionary<BVHJoint, Vector3>();
         foreach (BVHJoint joint in joints)
-            position.Add(joint.GetPosition(frameIndex));
+            position[joint] = joint.GetPosition(frameIndex);
         return position;
     }
 
-    public List<Vector3> GetFrameRotation(int frameIndex)
+    public Dictionary<BVHJoint, Vector3> GetFrameRotation(int frameIndex)
     {
-        List<Vector3> rotation = new List<Vector3>();
+        Dictionary<BVHJoint, Vector3> rotation = new Dictionary<BVHJoint, Vector3>();
         foreach (BVHJoint joint in joints)
-            rotation.Add(joint.GetRotationData(frameIndex));
+            rotation[joint] = joint.GetRotationData(frameIndex);
         return rotation;
     }
 }

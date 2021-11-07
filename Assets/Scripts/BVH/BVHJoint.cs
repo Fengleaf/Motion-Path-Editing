@@ -7,6 +7,9 @@ public class BVHJoint : MonoBehaviour
     public const string XPosition = "Xposition";
     public const string YPosition = "Yposition";
     public const string ZPosition = "Zposition";
+    public const string XRotation = "Xrotation";
+    public const string YRotation = "Yrotation";
+    public const string ZRotation = "Zrotation";
 
     public BVHJoint parentJoint;
 
@@ -82,18 +85,30 @@ public class BVHJoint : MonoBehaviour
 
     public Vector3 GetPosition(int frameNumber, Dictionary<int, float> frameData)
     {
-        Vector3 position = transform.localPosition;
-        foreach (KeyValuePair<int, float> pair in frameData)
+        try
         {
-            string channel = channels[pair.Key];
-            if (channel == "Xposition")
-                position.x = pair.Value;
-            else if (channel == "Yposition")
-                position.y = pair.Value;
-            else if (channel == "Zposition")
-                position.z = pair.Value;
+            Vector3 position = transform.localPosition;
+            foreach (KeyValuePair<int, float> pair in frameData)
+            {
+                if (pair.Key < 0)
+                    continue;
+                string channel = channels[pair.Key];
+                if (channel == "Xposition")
+                    position.x = pair.Value;
+                else if (channel == "Yposition")
+                    position.y = pair.Value;
+                else if (channel == "Zposition")
+                    position.z = pair.Value;
+            }
+            return position;
         }
-        return position;
+        catch (System.Exception e)
+        {
+            Debug.Log(name);
+            Debug.Log(string.Join(", ", frameData));
+            throw;
+        }
+        
     }
 
     public Vector3 GetPosition(int frameNumber)
