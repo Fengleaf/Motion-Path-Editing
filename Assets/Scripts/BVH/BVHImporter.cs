@@ -54,6 +54,14 @@ public class BVHImporter : MonoBehaviour
                     // 偏移量
                     else if (inputs[0] == "OFFSET")
                     {
+                        for (int i = 1; i < inputs.Length; i++)
+                        {
+                            if (!IsFloat(inputs[i]))
+                            {
+                                Debug.Log("BVH ERROR!");
+                                yield break;
+                            }
+                        }
                         Vector3 offset = new Vector3(Convert.ToSingle(inputs[1]), Convert.ToSingle(inputs[2]), Convert.ToSingle(inputs[3]));
                         bvh.SetJointOffset(jointNames[jointNames.Count - 1], offset);
                     }
@@ -81,6 +89,13 @@ public class BVHImporter : MonoBehaviour
                     // 右括號，減少一層
                     else if (inputs[0] == "}")
                         jointNames.RemoveAt(jointNames.Count - 1);
+                    else if (inputs[0] == "MOTION")
+                        ;
+                    else
+                    {
+                        Debug.Log("BVH ERROR! " + inputs[0]);
+                        yield break;
+                    }
                 }
                 // Motion
                 // Frames
@@ -117,7 +132,13 @@ public class BVHImporter : MonoBehaviour
             else
             {
                 Debug.LogError("Not fount HIERARCHY!!");
+                yield break;
             }
         }
+    }
+
+    private bool IsFloat(string str)
+    {
+        return float.TryParse(str, out _);
     }
 }

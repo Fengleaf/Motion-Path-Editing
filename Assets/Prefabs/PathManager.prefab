@@ -52,4 +52,4 @@ MonoBehaviour:
   minusPntBut: {fileID: 0}
   pntCountTxt: {fileID: 0}
   lineSegment: {fileID: 3656078609793375232, guid: 18db8a4e2a507fe4db9bfbfea0a70bf3, type: 3}
-  bezierErrorPar: 10
+  bezierErrorPar: 5
