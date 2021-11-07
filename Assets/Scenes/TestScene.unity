@@ -3322,6 +3322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  followParameter: 200
 --- !u!1 &1521014172
 GameObject:
   m_ObjectHideFlags: 0
@@ -3630,6 +3631,11 @@ MonoBehaviour:
   visibilityToggle: {fileID: 979887806}
   blendingDropdown: {fileID: 1736330736}
   blendingButton: {fileID: 1434833528}
+  frontButton: {fileID: 1724781807}
+  backButton: {fileID: 766224367}
+  topButton: {fileID: 432331651}
+  leftButton: {fileID: 242376283}
+  rightButton: {fileID: 560365016}
 --- !u!1 &1664133017
 GameObject:
   m_ObjectHideFlags: 0
@@ -4182,7 +4188,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1724781808}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1648889215}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1724781808
 MonoBehaviour:
   m_ObjectHideFlags: 0
