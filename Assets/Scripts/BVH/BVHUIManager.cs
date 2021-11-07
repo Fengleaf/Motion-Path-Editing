@@ -15,6 +15,12 @@ public class BVHUIManager : MonoBehaviour
     public Dropdown blendingDropdown;
     public Button blendingButton;
 
+    public Button frontButton;
+    public Button backButton;
+    public Button topButton;
+    public Button leftButton;
+    public Button rightButton;
+
     private Dictionary<int, BVH> bvhDict = new Dictionary<int, BVH>();
     private int nowIndex;
 
@@ -27,6 +33,11 @@ public class BVHUIManager : MonoBehaviour
     {
         visibilityToggle.onValueChanged.AddListener(x => ChangeVisibility(x));
         blendingButton.onClick.AddListener(() => BlendMotion());
+        frontButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Front));
+        backButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Back));
+        topButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Top));
+        leftButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Left));
+        rightButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Right));
     }
 
     public void AddNewBVH(BVH bVH)
@@ -59,5 +70,10 @@ public class BVHUIManager : MonoBehaviour
         BVH now = bvhDict[nowIndex];
         BVH target = bvhDict[dropdownIndex];
         now.Blend(target);
+    }
+
+    public void OnCameraFollowClick(FollowState state)
+    {
+        FindObjectOfType<CameraMovement>().Follow(bvhDict[nowIndex], state);
     }
 }

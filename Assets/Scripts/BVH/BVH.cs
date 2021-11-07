@@ -13,7 +13,7 @@ public class BVH : MonoBehaviour
 
     public int MoveSpeed = 5;
 
-    private BVHJoint root;
+    public BVHJoint root;
 
     private List<BVHJoint> joints;
 
