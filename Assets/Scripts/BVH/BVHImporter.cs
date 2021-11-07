@@ -1,3 +1,4 @@
+using SFB;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,10 +18,10 @@ public class BVHImporter : MonoBehaviour
 
     public void ImportBVH()
     {
-        string fileName = EditorUtility.OpenFilePanel("匯入BVH", Path.Combine(Application.streamingAssetsPath, "BVHs"), "bvh");
-        if (fileName == "")
+        string[] fileName = StandaloneFileBrowser.OpenFilePanel("匯入BVH", Path.Combine(Application.streamingAssetsPath, "BVHs"), "bvh", false);
+        if (fileName[0] == "")
             return;
-        StartCoroutine(ParseBVH(fileName));
+        StartCoroutine(ParseBVH(fileName[0]));
     }
 
     private IEnumerator ParseBVH(string fileName)
@@ -103,7 +104,7 @@ public class BVHImporter : MonoBehaviour
                     inputs = line.Split(' ');
                     bvh.AddMotionFrame(new List<string>(inputs));
                 }
-                bvh.name = fileName.Substring(fileName.LastIndexOf('/') + 1, fileName.IndexOf(".bvh") - fileName.LastIndexOf('/') - 1);
+                bvh.name = fileName.Substring(fileName.LastIndexOf('\\') + 1, fileName.IndexOf(".bvh") - fileName.LastIndexOf('\\') - 1);
                 // Hips 的所有路徑
                 List<Vector3> path = bvh.GetAllPath();
                 bvh.originPathPoint = path;
