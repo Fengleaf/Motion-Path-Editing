@@ -69,7 +69,7 @@ public class BVHUIManager : MonoBehaviour
         int dropdownIndex = blendingDropdown.value;
         BVH now = bvhDict[nowIndex];
         BVH target = bvhDict[dropdownIndex];
-        now.Blend(target);
+        now.Concatenate(target);
     }
 
     public void OnCameraFollowClick(FollowState state)

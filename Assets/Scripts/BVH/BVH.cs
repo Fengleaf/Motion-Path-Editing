@@ -207,17 +207,17 @@ public class BVH : MonoBehaviour
         }
     }
 
-    public void Blend(BVH target)
+    public void Concatenate(BVH target)
     {
         int startIndex = frameNumber - 1;
-        Dictionary<BVHJoint, Vector3> lastPosition = GetFramePosition(startIndex);
+        Dictionary<string, Vector3> lastPosition = GetFramePosition(startIndex);
         //List<Vector3> lastRotation = GetFrameRotation(startIndex);
-        Dictionary<BVHJoint, Vector3> newPosition = target.GetFramePosition(0);
+        Dictionary<string, Vector3> newPosition = target.GetFramePosition(0);
         //List<Vector3> newRotation = target.GetFrameRotation(target.frameNumber - 1);
 
-        Dictionary<BVHJoint, Vector3> offsetPosition = new Dictionary<BVHJoint, Vector3>();
+        Dictionary<string, Vector3> offsetPosition = new Dictionary<string, Vector3>();
         for (int i = 0; i < lastPosition.Count && i < newPosition.Count; i++)
-            offsetPosition[joints[i]] = lastPosition[joints[i]] - newPosition[target.joints[i]];
+            offsetPosition[joints[i].name] = lastPosition[joints[i].name] - newPosition[joints[i].name];
 
         //List<Vector3> offsetRotation = new List<Vector3>();
         //for (int i = 0; i < lastRotation.Count && i < newRotation.Count; i++)
@@ -228,12 +228,18 @@ public class BVH : MonoBehaviour
             for (int j = 0; j < target.joints.Count; j++)
             {
                 Dictionary<string, float> datas = new Dictionary<string, float>();
-                Vector3 newPoint = target.joints[j].GetPosition(i);
-                Vector3 offset = offsetPosition[joints[j]];
-                datas[BVHJoint.XPosition] = (newPoint + offset).x;
-                datas[BVHJoint.YPosition] = (newPoint + offset).y;
-                datas[BVHJoint.ZPosition] = (newPoint + offset).z;
-                Vector3 newRotation = target.joints[j].GetRotationData(i);
+                BVHJoint joint = target.joints.Find(x => x.name == joints[j].name);
+                if (joint == null)
+                    continue;
+                if ( j == 0)
+                {
+                    Vector3 newPoint = joint.GetPosition(i);
+                    Vector3 offset = offsetPosition[joints[j].name];
+                    datas[BVHJoint.XPosition] = (newPoint + offset).x;
+                    datas[BVHJoint.YPosition] = (newPoint + offset).y;
+                    datas[BVHJoint.ZPosition] = (newPoint + offset).z;
+                }
+                Vector3 newRotation = joint.GetRotationData(i);
                 datas[BVHJoint.XRotation] = newRotation.x;
                 datas[BVHJoint.YRotation] = newRotation.y;
                 datas[BVHJoint.ZRotation] = newRotation.z;
@@ -241,22 +247,25 @@ public class BVH : MonoBehaviour
             }
         }
         frameNumber += target.frameNumber;
+
+        Debug.Log(string.Join("\n", GetAllPath()));
+
         pathManager.SetBezierFitPath(GetAllPath());
     }
 
-    public Dictionary<BVHJoint, Vector3> GetFramePosition(int frameIndex)
+    public Dictionary<string, Vector3> GetFramePosition(int frameIndex)
     {
-        Dictionary<BVHJoint, Vector3> position = new Dictionary<BVHJoint, Vector3>();
+        Dictionary<string, Vector3> position = new Dictionary<string, Vector3>();
         foreach (BVHJoint joint in joints)
-            position[joint] = joint.GetPosition(frameIndex);
+            position[joint.name] = joint.GetPosition(frameIndex);
         return position;
     }
 
-    public Dictionary<BVHJoint, Vector3> GetFrameRotation(int frameIndex)
+    public Dictionary<string, Vector3> GetFrameRotation(int frameIndex)
     {
-        Dictionary<BVHJoint, Vector3> rotation = new Dictionary<BVHJoint, Vector3>();
+        Dictionary<string, Vector3> rotation = new Dictionary<string, Vector3>();
         foreach (BVHJoint joint in joints)
-            rotation[joint] = joint.GetRotationData(frameIndex);
+            rotation[joint.name] = joint.GetRotationData(frameIndex);
         return rotation;
     }
 }

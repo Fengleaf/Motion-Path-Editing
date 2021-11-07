@@ -116,6 +116,8 @@ public class BVHJoint : MonoBehaviour
         Vector3 position = transform.localPosition;
         foreach (KeyValuePair<int, float> pair in frames[frameNumber])
         {
+            if (pair.Key < 0)
+                continue;
             string channel = channels[pair.Key];
             if (channel == "Xposition")
                 position.x = pair.Value;
