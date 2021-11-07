@@ -106,6 +106,7 @@ public class BVHImporter : MonoBehaviour
                 bvh.name = fileName.Substring(fileName.LastIndexOf('/') + 1, fileName.IndexOf(".bvh") - fileName.LastIndexOf('/') - 1);
                 // Hips 的所有路徑
                 List<Vector3> path = bvh.GetAllPath();
+                bvh.originPathPoint = path;
                 PathManager aPathManager = Instantiate(pathManagerPrefab);
                 yield return null;
                 aPathManager.SetBezierFitPath(path);

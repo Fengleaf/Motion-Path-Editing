@@ -12,6 +12,9 @@ public class BVHUIManager : MonoBehaviour
 
     public Toggle visibilityToggle;
 
+    public Dropdown blendingDropdown;
+    public Button blendingButton;
+
     private Dictionary<int, BVH> bvhDict = new Dictionary<int, BVH>();
     private int nowIndex;
 
@@ -23,6 +26,7 @@ public class BVHUIManager : MonoBehaviour
     private void Start()
     {
         visibilityToggle.onValueChanged.AddListener(x => ChangeVisibility(x));
+        blendingButton.onClick.AddListener(() => BlendMotion());
     }
 
     public void AddNewBVH(BVH bVH)
@@ -32,6 +36,7 @@ public class BVHUIManager : MonoBehaviour
         int index = bvhButtonItemContainer.childCount - 1;
         bvhDict[index] = bVH;
         button.onClick.AddListener(() => OnBVHButtonClick(index));
+        blendingDropdown.AddOptions(new List<string>() { bVH.name });
     }
 
     public void OnBVHButtonClick(int index)
@@ -46,5 +51,13 @@ public class BVHUIManager : MonoBehaviour
             return;
         bvhDict[nowIndex].gameObject.SetActive(visible);
         bvhDict[nowIndex].pathManager.gameObject.SetActive(visible);
+    }
+
+    public void BlendMotion()
+    {
+        int dropdownIndex = blendingDropdown.value;
+        BVH now = bvhDict[nowIndex];
+        BVH target = bvhDict[dropdownIndex];
+        now.Blend(target);
     }
 }

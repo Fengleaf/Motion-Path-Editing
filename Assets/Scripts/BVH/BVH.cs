@@ -20,7 +20,9 @@ public class BVH : MonoBehaviour
     private int frameNumber;
     private float frameTime;
 
+    public List<Vector3> originPathPoint;
     private List<Vector3> pathPoints;
+    private List<Vector3> orientationPoints;
 
     private Coroutine runFrameCoroutine;
     private Coroutine runPositionCoroutine;
@@ -97,14 +99,13 @@ public class BVH : MonoBehaviour
             StopCoroutine(runFrameCoroutine);
         if (runPositionCoroutine != null)
             StopCoroutine(runPositionCoroutine);
-        pathPoints = new List<Vector3>();
-        //foreach (LineSegment segment in PathManager.Instance.segments)
-        //{
-        //    for (int i = 0; i < segment.segmentRenderer.positionCount; i++)
-        //        pathPoints.Add(segment.segmentRenderer.GetPosition(i));
-        //}
+
+
         pathPoints = pathManager.GetPath();
         LoadPath(pathPoints);
+
+        orientationPoints = pathManager.GetOrientations();
+
         runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
         //runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
     }
@@ -118,15 +119,14 @@ public class BVH : MonoBehaviour
         while (true)
         {
             UpdateFrame(frameIndex % frameNumber, time);
-            //UpdatePosition(pathIndex % pathPoints.Count);
+            //UpdatePosition(pathIndex % orientationPoints.Count);
             //yield return new WaitForSeconds(frameTime);
             time += 1 / (frameTime / Time.deltaTime);
-            Debug.Log(time);
             if (time >= 1)
             {
                 time = 0;
                 frameIndex++;
-                //pathIndex++;
+                pathIndex++;
             }
             yield return null;
         }
@@ -167,17 +167,26 @@ public class BVH : MonoBehaviour
     private void UpdatePosition(int pathIndex)
     {
         // 面向切線方向
-        if (pathIndex < pathPoints.Count - 1)
+        if (pathIndex < orientationPoints.Count - 1)
         {
+            Vector3 now = orientationPoints[pathIndex];// root.GetPosition(pathIndex);
+            //Vector3 next = orientationPoints[pathIndex + 1]; //root.GetPosition(pathIndex + 1);
             // A 點到 B 點的向量
-            Vector3 vector = pathPoints[pathIndex + 1] - pathPoints[pathIndex];
+            //Vector3 vector = next - now;
             // 外積
             Quaternion rotation = Quaternion.Euler(0, 45, 0);
-            Vector3 rotateVector = rotation * vector;
-            Vector3 cross = Vector3.Cross(vector, rotateVector);
-            transform.LookAt(transform.position + vector, cross);
+            Vector3 rotateVector = rotation * now;
+            Vector3 cross = Vector3.Cross(now, rotateVector);
+            //transform.LookAt(transform.position + now, cross);
+            //transform.rotation = Quaternion.identity;
+            Debug.Log(now);
+            float angle = Vector3.Angle(originPathPoint[pathIndex], pathPoints[pathIndex]);
+            transform.rotation = Quaternion.identity;
+            transform.Rotate(root.transform.position, angle);
+            //transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, now);
         }
     }
+
     public List<Vector3> GetAllPath()
     {
         List<Vector3> path = new List<Vector3>();
@@ -196,5 +205,48 @@ public class BVH : MonoBehaviour
             root.ChangeFrameData(i, BVHJoint.YPosition, newPath[i].y);
             root.ChangeFrameData(i, BVHJoint.ZPosition, newPath[i].z);
         }
+    }
+
+    public void Blend(BVH target)
+    {
+        int startIndex = frameNumber - 1;
+        List<Vector3> lastPosition = GetFramePosition(startIndex);
+        //List<Vector3> lastRotation = GetFrameRotation(startIndex);
+        List<Vector3> newPosition = target.GetFramePosition(target.frameNumber - 1);
+        //List<Vector3> newRotation = target.GetFrameRotation(target.frameNumber - 1);
+
+        List<Vector3> offsetPosition = new List<Vector3>();
+        for (int i = 0; i < lastPosition.Count && i < newPosition.Count; i++)
+            offsetPosition.Add(lastPosition[i] - newPosition[i]);
+
+        //List<Vector3> offsetRotation = new List<Vector3>();
+        //for (int i = 0; i < lastRotation.Count && i < newRotation.Count; i++)
+        //    offsetRotation.Add(lastRotation[i] - newRotation[i]);
+
+        for (int i = 0; i < target.frameNumber; i++)
+        {
+            for (int j = 0; j < target.joints.Count; j++)
+            {
+
+            }
+        }
+        frameNumber += target.frameNumber;
+        pathManager.SetBezierFitPath(GetAllPath());
+    }
+
+    public List<Vector3> GetFramePosition(int frameIndex)
+    {
+        List<Vector3> position = new List<Vector3>();
+        foreach (BVHJoint joint in joints)
+            position.Add(joint.GetPosition(frameIndex));
+        return position;
+    }
+
+    public List<Vector3> GetFrameRotation(int frameIndex)
+    {
+        List<Vector3> rotation = new List<Vector3>();
+        foreach (BVHJoint joint in joints)
+            rotation.Add(joint.GetRotationData(frameIndex));
+        return rotation;
     }
 }

@@ -41,6 +41,7 @@ public class LineSegment : MonoBehaviour
         Vector3[] fitPntArr = new Vector3[oriPnts.Count];
         segmentRenderer.GetPositions(fitPntArr);
         oriFitPnts = new List<Vector3>(fitPntArr);
+        
         for (int i = 0; i < oriFitPnts.Count - 2; i++)
         {
             oriFitPntOrientations.Add(oriFitPnts[i + 2] - oriFitPnts[i]);

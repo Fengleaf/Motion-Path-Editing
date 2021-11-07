@@ -77,6 +77,7 @@ public class BVHJoint : MonoBehaviour
         }
         transform.localPosition = position;
         transform.localRotation = Quaternion.Euler(interpolated);
+
     }
 
     public Vector3 GetPosition(int frameNumber, Dictionary<int, float> frameData)
@@ -122,29 +123,92 @@ public class BVHJoint : MonoBehaviour
             if (i == 0)
             {
                 if (channel == "Zrotation")
-                    //rotation.z = value;
                     rotation = Quaternion.Euler(0, 0, value);
                 else if (channel == "Xrotation")
-                    //rotation.x = value;
                     rotation = Quaternion.Euler(value, 0, 0);
                 else if (channel == "Yrotation")
-                    //rotation.y = value;
                     rotation = Quaternion.Euler(0, value, 0);
             }
             else
             {
                 if (channel == "Zrotation")
-                    //rotation.z = value;
                     rotation *= Quaternion.Euler(0, 0, value);
                 else if (channel == "Xrotation")
-                    //rotation.x = value;
                     rotation *= Quaternion.Euler(value, 0, 0);
                 else if (channel == "Yrotation")
-                    //rotation.y = value;
                     rotation *= Quaternion.Euler(0, value, 0);
             }
         }
         return rotation;
+    }
+
+    public Quaternion GetRotation(int frameNumber)
+    {
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+
+        for (int i = 0; i < channels.Count; i++)
+        {
+            string channel = channels[i];
+            float value = frames[frameNumber][i];
+            if (i == 0)
+            {
+                if (channel == "Zrotation")
+                    rotation = Quaternion.Euler(0, 0, value);
+                else if (channel == "Xrotation")
+                    rotation = Quaternion.Euler(value, 0, 0);
+                else if (channel == "Yrotation")
+                    rotation = Quaternion.Euler(0, value, 0);
+            }
+            else
+            {
+                if (channel == "Zrotation")
+                    rotation *= Quaternion.Euler(0, 0, value);
+                else if (channel == "Xrotation")
+                    rotation *= Quaternion.Euler(value, 0, 0);
+                else if (channel == "Yrotation")
+                    rotation *= Quaternion.Euler(0, value, 0);
+            }
+        }
+        return rotation;
+    }
+
+    public Vector3 GetRotationData(int frameNumber)
+    {
+        Vector3 rotation = new Vector3();
+
+        for (int i = 0; i < channels.Count; i++)
+        {
+            string channel = channels[i];
+            float value = frames[frameNumber][i];
+            if (channel == "Zrotation")
+                rotation.z = value;
+            else if (channel == "Xrotation")
+                rotation.x = value;
+            else if (channel == "Yrotation")
+                rotation.y = value;
+        }
+        return rotation;
+    }
+
+    public void AddFrameData(Dictionary<string, float> value)
+    {
+        Dictionary<int, float> newFrame = new Dictionary<int, float>();
+        foreach (KeyValuePair<string, float> pair in value)
+        {
+            int channelIndex = channels.IndexOf(pair.Key);
+            newFrame[channelIndex] = pair.Value;
+        }
+        frames.Add(newFrame);
+    }
+
+    public Dictionary<string, float> GetFrameData(int frameIndex)
+    {
+        Dictionary<string, float> data = new Dictionary<string, float>();
+        for (int i = 0; i < channels.Count; i++)
+        {
+            data[channels[i]] = frames[frameIndex][i];
+        }
+        return data;
     }
 
     public void ChangeFrameData(int frameNumber, string channelName, float value)

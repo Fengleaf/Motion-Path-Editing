@@ -122,13 +122,13 @@ public class PathManager : MonoBehaviour
     public List<Vector3> GetOrientations()
     {
         List<Vector3> nowOrientation = new List<Vector3>();
-        Vector3[] nowPnts = new Vector3[lineSegment.segmentPntCount];
-        lineSegment.segmentRenderer.GetPositions(nowPnts);
-        for (int i = 0; i < lineSegment.oriFitPnts.Count - 2; i++)
+        Vector3[] nowPnts = new Vector3[segments[0].segmentPntCount];
+        segments[0].segmentRenderer.GetPositions(nowPnts);
+        for (int i = 0; i < segments[0].oriFitPnts.Count - 2; i++)
         {
             nowOrientation.Add(nowPnts[i + 2] - nowPnts[i]);
         }
-        nowOrientation.Add(nowPnts[nowPnts.Length - 1] - nowPnts[nowPnts.Length]);
+        nowOrientation.Add(nowPnts[nowPnts.Length - 1] - nowPnts[nowPnts.Length - 2]);
         if (nowPnts.Length > 1)
         {
             nowOrientation.Insert(0, nowPnts[1] - nowPnts[0]);
@@ -136,7 +136,7 @@ public class PathManager : MonoBehaviour
         List<Vector3> newOrientation = new List<Vector3>();
         for (int i = 0; i < nowOrientation.Count; i++)
         {
-            newOrientation.Add(nowOrientation[i] - lineSegment.oriFitPntOrientations[i]);
+            newOrientation.Add(nowOrientation[i] - segments[0].oriFitPntOrientations[i]);
         }
         return newOrientation;
     }
