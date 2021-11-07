@@ -12,14 +12,19 @@ public class BVHUIManager : MonoBehaviour
 
     public Toggle visibilityToggle;
 
-    public Dropdown blendingDropdown;
-    public Button blendingButton;
+    public Dropdown concatenateDropdown;
+    public Button concatenateButton;
 
     public Button frontButton;
     public Button backButton;
     public Button topButton;
     public Button leftButton;
     public Button rightButton;
+
+    public Dropdown blendingDropdown;
+    public Button blendingButton;
+    public Slider blendingSlider;
+    public Text blendingText;
 
     private Dictionary<int, BVH> bvhDict = new Dictionary<int, BVH>();
     private int nowIndex;
@@ -32,12 +37,14 @@ public class BVHUIManager : MonoBehaviour
     private void Start()
     {
         visibilityToggle.onValueChanged.AddListener(x => ChangeVisibility(x));
-        blendingButton.onClick.AddListener(() => BlendMotion());
+        concatenateButton.onClick.AddListener(() => ConcatenateMotion());
         frontButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Front));
         backButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Back));
         topButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Top));
         leftButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Left));
         rightButton.onClick.AddListener(() => OnCameraFollowClick(FollowState.Right));
+        blendingButton.onClick.AddListener(() => BlendMotion());
+        blendingSlider.onValueChanged.AddListener(x => blendingText.text = x.ToString());
     }
 
     public void AddNewBVH(BVH bVH)
@@ -47,6 +54,7 @@ public class BVHUIManager : MonoBehaviour
         int index = bvhButtonItemContainer.childCount - 1;
         bvhDict[index] = bVH;
         button.onClick.AddListener(() => OnBVHButtonClick(index));
+        concatenateDropdown.AddOptions(new List<string>() { bVH.name });
         blendingDropdown.AddOptions(new List<string>() { bVH.name });
     }
 
@@ -64,9 +72,9 @@ public class BVHUIManager : MonoBehaviour
         bvhDict[nowIndex].pathManager.gameObject.SetActive(visible);
     }
 
-    public void BlendMotion()
+    public void ConcatenateMotion()
     {
-        int dropdownIndex = blendingDropdown.value;
+        int dropdownIndex = concatenateDropdown.value;
         BVH now = bvhDict[nowIndex];
         BVH target = bvhDict[dropdownIndex];
         now.Concatenate(target);
@@ -75,5 +83,13 @@ public class BVHUIManager : MonoBehaviour
     public void OnCameraFollowClick(FollowState state)
     {
         FindObjectOfType<CameraMovement>().Follow(bvhDict[nowIndex], state);
+    }
+
+    public void BlendMotion()
+    {
+        int dropdownIndex = blendingDropdown.value;
+        BVH now = bvhDict[nowIndex];
+        BVH target = bvhDict[dropdownIndex];
+        now.Blend(target, blendingSlider.value);
     }
 }

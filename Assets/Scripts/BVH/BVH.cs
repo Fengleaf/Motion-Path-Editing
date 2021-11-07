@@ -231,7 +231,7 @@ public class BVH : MonoBehaviour
                 BVHJoint joint = target.joints.Find(x => x.name == joints[j].name);
                 if (joint == null)
                     continue;
-                if ( j == 0)
+                if (j == 0)
                 {
                     Vector3 newPoint = joint.GetPosition(i);
                     Vector3 offset = offsetPosition[joints[j].name];
@@ -251,6 +251,45 @@ public class BVH : MonoBehaviour
         Debug.Log(string.Join("\n", GetAllPath()));
 
         pathManager.SetBezierFitPath(GetAllPath());
+    }
+
+    public void Blend(BVH target, float weight)
+    {
+        for (int i = 0; i < frameNumber && i < target.frameNumber; i++)
+        {
+            //Dictionary<string, Vector3> myPosition = GetFramePosition(i);
+            //Dictionary<string, Vector3> targetPosition = target.GetFramePosition(i);
+
+            //Dictionary<string, Vector3> myRotation= GetFrameRotation(i);
+            //Dictionary<string, Vector3> targetRotation= target.GetFrameRotation(i);
+
+            for (int j = 0; j < joints.Count; j++)
+            {
+                BVHJoint targetJoint = target.joints.Find(x => x.name == joints[j].name);
+                if (targetJoint == null)
+                    continue;
+                Vector3 me;
+                Vector3 ta;
+                Vector3 interpolation;
+                if (j == 0)
+                {
+                    me = joints[j].GetPosition(i);
+                    ta = targetJoint.GetPosition(i);
+                    interpolation = me * (1 - weight) + ta * weight;
+                    joints[j].ChangeFrameData(i, BVHJoint.XPosition, interpolation.x);
+                    joints[j].ChangeFrameData(i, BVHJoint.YPosition, interpolation.y);
+                    joints[j].ChangeFrameData(i, BVHJoint.ZPosition, interpolation.z);
+                }
+                me = joints[j].GetRotationData(i);
+                ta = targetJoint.GetRotationData(i);
+                interpolation = me * (1 - weight) + ta * weight;
+                joints[j].ChangeFrameData(i, BVHJoint.XRotation, interpolation.x);
+                joints[j].ChangeFrameData(i, BVHJoint.YRotation, interpolation.y);
+                joints[j].ChangeFrameData(i, BVHJoint.ZRotation, interpolation.z);
+            }
+        }
+        pathManager.SetBezierFitPath(GetAllPath());
+        LoadPath(pathManager.GetPath());
     }
 
     public Dictionary<string, Vector3> GetFramePosition(int frameIndex)
