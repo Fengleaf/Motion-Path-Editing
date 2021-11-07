@@ -34,7 +34,7 @@ public class LineSegment : MonoBehaviour
         FEPoint[0] = startPnt;
         FEPoint[1] = endPnt;
         oriPnts = new List<Vector3>(originPnts);
-        segmentPntCount = pntCount;
+        segmentPntCount = originPnts.Count;
         segmentIndex = index;
         segmentRenderer.SetPositions(FEPoint);
         calculateBezierCurve(startPnt, endPnt, subPnt0, subPnt1);
