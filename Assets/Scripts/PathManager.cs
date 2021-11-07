@@ -86,6 +86,14 @@ public class PathManager : MonoBehaviour
     {
         // May need to reset these lists
         //controllPntObs = new List<GameObject>();
+        DestroyObInList(controllPntObs);
+        DestroyObInList(subControllPntObs);
+        controllPnts.Clear();
+        for (int i = 0; i < segments.Count; i++)
+        {
+            segments[i] = null;
+        }
+        segments.Clear();
         //subControllPntObs = new List<GameObject>();
         //controllPnts = new List<Vector3>();
         //segments = new List<LineSegment>();
@@ -104,6 +112,15 @@ public class PathManager : MonoBehaviour
     public void updateSegment()
     {
 
+    }
+
+    private void DestroyObInList(List<GameObject> obList)
+    {
+        for (int i = 0;i < obList.Count;i++)
+        {
+            Destroy(obList[i]);
+        }
+        obList.Clear();
     }
 
     public List<Vector3> GetPath()
