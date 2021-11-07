@@ -45,7 +45,7 @@ public class LineSegment : MonoBehaviour
         {
             oriFitPntOrientations.Add(oriFitPnts[i + 2] - oriFitPnts[i]);
         }
-        oriFitPntOrientations.Add(oriFitPnts[oriFitPnts.Count - 1] - oriFitPnts[oriFitPnts.Count]);
+        oriFitPntOrientations.Add(oriFitPnts[oriFitPnts.Count - 1] - oriFitPnts[oriFitPnts.Count - 2]);
         if (oriFitPnts.Count > 1)
         {
             oriFitPntOrientations.Insert(0, oriFitPnts[1] - oriFitPnts[0]);
