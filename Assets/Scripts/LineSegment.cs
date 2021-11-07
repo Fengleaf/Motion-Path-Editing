@@ -8,6 +8,7 @@ public class LineSegment : MonoBehaviour
     public Vector3[] FEPoint = new Vector3[2];
     public List<Vector3> oriPnts;
     public List<Vector3> oriFitPnts;
+    public List<Vector3> oriFitPntOrientations = new List<Vector3>();
     public int segmentIndex;
     public int segmentPntCount = 0;
     private List<Vector3> segmentPnts;
@@ -40,7 +41,15 @@ public class LineSegment : MonoBehaviour
         Vector3[] fitPntArr = new Vector3[oriPnts.Count];
         segmentRenderer.GetPositions(fitPntArr);
         oriFitPnts = new List<Vector3>(fitPntArr);
-
+        for (int i = 0; i < oriFitPnts.Count - 2; i++)
+        {
+            oriFitPntOrientations.Add(oriFitPnts[i + 2] - oriFitPnts[i]);
+        }
+        oriFitPntOrientations.Add(oriFitPnts[oriFitPnts.Count - 1] - oriFitPnts[oriFitPnts.Count]);
+        if (oriFitPnts.Count > 1)
+        {
+            oriFitPntOrientations.Insert(0, oriFitPnts[1] - oriFitPnts[0]);
+        }
     }
 
     public void calculateCurve(Vector3 prePntEnd, Vector3 nowPntStart, Vector3 nowPntEnd, Vector3 nextPntStart)

@@ -119,6 +119,28 @@ public class PathManager : MonoBehaviour
         return newPnts; 
     }
 
+    public List<Vector3> GetOrientations()
+    {
+        List<Vector3> nowOrientation = new List<Vector3>();
+        Vector3[] nowPnts = new Vector3[lineSegment.segmentPntCount];
+        lineSegment.segmentRenderer.GetPositions(nowPnts);
+        for (int i = 0; i < lineSegment.oriFitPnts.Count - 2; i++)
+        {
+            nowOrientation.Add(nowPnts[i + 2] - nowPnts[i]);
+        }
+        nowOrientation.Add(nowPnts[nowPnts.Length - 1] - nowPnts[nowPnts.Length]);
+        if (nowPnts.Length > 1)
+        {
+            nowOrientation.Insert(0, nowPnts[1] - nowPnts[0]);
+        }
+        List<Vector3> newOrientation = new List<Vector3>();
+        for (int i = 0; i < nowOrientation.Count; i++)
+        {
+            newOrientation.Add(nowOrientation[i] - lineSegment.oriFitPntOrientations[i]);
+        }
+        return newOrientation;
+    }
+
     private GameObject newControllPntOb(Vector3 pos)
     {
         GameObject newPntOb = Instantiate(controllPntOb, transform);
