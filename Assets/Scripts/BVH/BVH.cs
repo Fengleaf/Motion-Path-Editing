@@ -188,7 +188,7 @@ public class BVH : MonoBehaviour
         root.transform.RotateAround(root.transform.position, Vector3.up, theta);
 
         //float testTheta = (oriTangent - newTangent) / (1 + oriTangent * newTangent);
-        Debug.DrawLine(root.transform.position, root.transform.position + oriTangent * 40, Color.yellow) ;
+        Debug.DrawLine(root.transform.position, root.transform.position + oriTangent * 40, Color.yellow);
         Debug.DrawLine(root.transform.position, root.transform.position + newTangent * 40, Color.red);
         Debug.DrawLine(root.transform.position, root.transform.position + Vector3.up * 100, Color.green);
     }
@@ -216,20 +216,79 @@ public class BVH : MonoBehaviour
     public void Concatenate(BVH target)
     {
         int startIndex = frameNumber - 1;
+
         Dictionary<string, Vector3> lastPosition = GetFramePosition(startIndex);
-        //List<Vector3> lastRotation = GetFrameRotation(startIndex);
         Dictionary<string, Vector3> newPosition = target.GetFramePosition(0);
-        //List<Vector3> newRotation = target.GetFrameRotation(target.frameNumber - 1);
 
         Dictionary<string, Vector3> offsetPosition = new Dictionary<string, Vector3>();
         for (int i = 0; i < lastPosition.Count && i < newPosition.Count; i++)
             offsetPosition[joints[i].name] = lastPosition[joints[i].name] - newPosition[joints[i].name];
 
-        //List<Vector3> offsetRotation = new List<Vector3>();
-        //for (int i = 0; i < lastRotation.Count && i < newRotation.Count; i++)
-        //    offsetRotation.Add(lastRotation[i] - newRotation[i]);
+        // 找最接近的兩個frame
+        float min = Mathf.Infinity;
+        int indexJ = 0;
+        Dictionary<string, Vector3> firstPos = GetFramePosition(startIndex);
+        Dictionary<string, Vector3> firstRot = GetFrameRotation(startIndex);
+        for (int j = 0; j < 5; j++)
+        {
+            Dictionary<string, Vector3> secondPos = target.GetFramePosition(j);
+            Dictionary<string, Vector3> secondRot = target.GetFrameRotation(j);
+            float minValue = 0;
+            foreach (string key in firstPos.Keys)
+                minValue += Vector3.Distance(secondPos[key], firstPos[key]);
+            foreach (string key in firstRot.Keys)
+                minValue += Vector3.Distance(secondRot[key], firstRot[key]);
+            if (minValue < min)
+            {
+                min = minValue;
+                indexJ = j;
+            }
 
-        for (int i = 0; i < target.frameNumber; i++)
+        }
+
+        Dictionary<string, Vector3> myPos = GetFramePosition(startIndex);
+        Dictionary<string, Vector3> myRot = GetFrameRotation(startIndex);
+        Dictionary<string, Vector3> taPos = target.GetFramePosition(indexJ);
+        Dictionary<string, Vector3> taRot = target.GetFrameRotation(indexJ);
+
+        List<Dictionary<string, Vector3>> interPos = new List<Dictionary<string, Vector3>>();
+        List<Dictionary<string, Vector3>> interRot = new List<Dictionary<string, Vector3>>();
+        // 插值
+        for (float t = 0.1f; t < 1; t += 0.1f)
+        {
+            interPos.Add(new Dictionary<string, Vector3>());
+            interRot.Add(new Dictionary<string, Vector3>());
+            foreach (string key in myPos.Keys)
+                interPos[interPos.Count - 1].Add(key, myPos[key] + (taPos[key] - myPos[key]) * t);
+            foreach (string key in myRot.Keys)
+                interRot[interRot.Count - 1].Add(key, myRot[key] + (taRot[key] - myRot[key]) * t);
+        }
+
+        for (int i = 0; i < interRot.Count; i++)
+        {
+            for (int j = 0; j < target.joints.Count; j++)
+            {
+                Dictionary<string, float> datas = new Dictionary<string, float>();
+                BVHJoint joint = target.joints.Find(x => x.name == joints[j].name);
+                if (joint == null)
+                    continue;
+                if (j == 0)
+                {
+                    Vector3 newPoint = joint.GetPosition(0);
+                    Vector3 offset = offsetPosition[joints[j].name];
+                    datas[BVHJoint.XPosition] = (newPoint + offset).x;
+                    datas[BVHJoint.YPosition] = (newPoint + offset).y;
+                    datas[BVHJoint.ZPosition] = (newPoint + offset).z;
+                }
+                datas[BVHJoint.XRotation] = interRot[i][joint.name].x;
+                datas[BVHJoint.YRotation] = interRot[i][joint.name].y;
+                datas[BVHJoint.ZRotation] = interRot[i][joint.name].z;
+                joints[j].AddFrameData(datas);
+            }
+            frameNumber++;
+        }
+
+        for (int i = indexJ; i < target.frameNumber; i++)
         {
             for (int j = 0; j < target.joints.Count; j++)
             {
@@ -252,8 +311,8 @@ public class BVH : MonoBehaviour
                 joints[j].AddFrameData(datas);
             }
         }
-        frameNumber += target.frameNumber;
-
+        frameNumber += target.frameNumber - indexJ;
+        originPathPoint = GetAllPath();
         Debug.Log(string.Join("\n", GetAllPath()));
 
         pathManager.SetBezierFitPath(GetAllPath());

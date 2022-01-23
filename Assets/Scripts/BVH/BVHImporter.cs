@@ -19,7 +19,7 @@ public class BVHImporter : MonoBehaviour
     public void ImportBVH()
     {
         string[] fileName = StandaloneFileBrowser.OpenFilePanel("匯入BVH", Path.Combine(Application.streamingAssetsPath, "BVHs"), "bvh", false);
-        if (fileName[0] == "")
+        if (fileName.Length == 0 || fileName[0] == "")
             return;
         StartCoroutine(ParseBVH(fileName[0]));
     }
