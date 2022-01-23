@@ -6,11 +6,18 @@ using UnityEngine;
 public class BVHUnityChan : MonoBehaviour
 {
     [Header("========== 原始的資料 =========")]
-    public List<BVHJoint> Joints = new List<BVHJoint>();
+    public List<GameObject> Joints = new List<GameObject>();
     public List<float> MotionPos = new List<float>();
     
     private bool IsSetOffsetY = false;
     private float OffsetY;
+
+    public static BVHUnityChan Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void UpdateMotionPos(GameObject people)
     {
@@ -99,7 +106,7 @@ public class BVHUnityChan : MonoBehaviour
             return;
 
         // 把關節加進去
-        Joints.Add(BodyBonesTran.gameObject.GetComponent<BVHJoint>());
+        Joints.Add(BodyBonesTran.gameObject);
         
         MotionPos.Add(BodyBonesTran.transform.rotation.x);
         MotionPos.Add(BodyBonesTran.transform.rotation.y);
