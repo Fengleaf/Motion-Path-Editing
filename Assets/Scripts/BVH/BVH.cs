@@ -179,20 +179,14 @@ public class BVH : MonoBehaviour
         Vector3 next = new Vector3(nextFrame[BVHJoint.XPosition], nextFrame[BVHJoint.YPosition], nextFrame[BVHJoint.ZPosition]);
         Vector3 newTangent = next - now;
 
-        float m = newTangent.y / newTangent.x;
-        Debug.Log(m);
-
-        float costheta = Vector3.Dot(newTangent, oriTangent) / oriTangent.magnitude / newTangent.magnitude;
-        float theta = Mathf.Acos(costheta) * Mathf.Rad2Deg;
-        if (costheta >= 0.999f)
-            theta = 0;
-        //Debug.Log(theta);
-        if (m < 0)
-            theta *= -1;
+        float theta = Vector3.SignedAngle(oriTangent, newTangent, Vector3.up);
+        //if (m < 0)
+        //    theta *= -1;
         root.transform.RotateAround(root.transform.position, Vector3.up, theta);
 
-        Debug.DrawLine(originPathPoint[0], originPathPoint[0] + oriTangent * 40, Color.red) ;
-        Debug.DrawLine(originPathPoint[0], originPathPoint[0] + newTangent * 40, Color.red) ;
+        //float testTheta = (oriTangent - newTangent) / (1 + oriTangent * newTangent);
+        Debug.DrawLine(root.transform.position, root.transform.position + oriTangent * 40, Color.yellow) ;
+        Debug.DrawLine(root.transform.position, root.transform.position + newTangent * 40, Color.red);
         Debug.DrawLine(root.transform.position, root.transform.position + Vector3.up * 100, Color.green);
     }
 
