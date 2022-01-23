@@ -70,7 +70,10 @@ public class BVHImporter : MonoBehaviour
                     {
                         List<string> channels = new List<string>();
                         for (int i = 0; i < Convert.ToInt32(inputs[1]); i++)
+                        {
                             channels.Add(inputs[i + 2]);
+                            bvh.motionString.Add(jointName + " " + inputs[i + 2]);
+                        }
                         bvh.SetJointChannels(jointNames[jointNames.Count - 1], channels);
                     }
                     // 新的關節

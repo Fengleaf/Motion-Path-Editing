@@ -16,9 +16,12 @@ public class GameManager : MonoBehaviour
     public void RunBVH()
     {
         List<BVH> bvhs = new List<BVH>(FindObjectsOfType<BVH>());
+        if (bvhs.Count > 0)
+            BVHUnityChan.Instance.GetDefaultData(bvhs[0].motionString.ToArray());
         foreach (BVH bvh in bvhs)
             bvh.Run();
     }
+
     public void Test(int index)
     {
         BVH bvh = new List<BVH>(FindObjectsOfType<BVH>())[index];

@@ -8,6 +8,8 @@ public class BVH : MonoBehaviour
 {
     public PathManager pathManager;
 
+    public List<string> motionString = new List<string>();
+
     public BVHJoint jointPrefab;
     public GameObject bonePrefab;
 
@@ -120,6 +122,7 @@ public class BVH : MonoBehaviour
         {
             UpdateFrame(frameIndex % frameNumber, time);
             UpdatePosition(pathIndex % orientationPoints.Count);
+            BVHUnityChan.Instance.UpdateMotionPos(gameObject);
             //yield return new WaitForSeconds(frameTime);
             time += 1 / (frameTime / Time.deltaTime);
             if (time >= 1)
