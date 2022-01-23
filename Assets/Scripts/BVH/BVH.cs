@@ -119,7 +119,7 @@ public class BVH : MonoBehaviour
         while (true)
         {
             UpdateFrame(frameIndex % frameNumber, time);
-            //UpdatePosition(pathIndex % orientationPoints.Count);
+            UpdatePosition(pathIndex % orientationPoints.Count);
             //yield return new WaitForSeconds(frameTime);
             time += 1 / (frameTime / Time.deltaTime);
             if (time >= 1)
@@ -166,25 +166,36 @@ public class BVH : MonoBehaviour
 
     private void UpdatePosition(int pathIndex)
     {
+        if (pathIndex == frameNumber - 1)
+            return;
+        Dictionary<string, float> frame = root.GetFrameData(pathIndex);
+        Dictionary<string, float> nextFrame = root.GetFrameData(pathIndex + 1);
+        Vector3 now = new Vector3(frame[BVHJoint.XPosition], frame[BVHJoint.YPosition], frame[BVHJoint.ZPosition]);
+        Vector3 next = new Vector3(nextFrame[BVHJoint.XPosition], nextFrame[BVHJoint.YPosition], nextFrame[BVHJoint.ZPosition]);
+        Vector3 vector = next - now;
+        Vector3 cross = Vector3.Cross(vector, -root.transform.right);
+        Debug.DrawLine(now, next, Color.red, 5f) ;
+        //transform.LookAt(next, Vector3.up);
+        transform.RotateAround(root.transform.position, Vector3.up, 1);
+        Debug.DrawLine(root.transform.position, root.transform.position + Vector3.up * 100, Color.green);
         // 面向切線方向
-        if (pathIndex < orientationPoints.Count - 1)
-        {
-            Vector3 now = orientationPoints[pathIndex];// root.GetPosition(pathIndex);
-            //Vector3 next = orientationPoints[pathIndex + 1]; //root.GetPosition(pathIndex + 1);
-            // A 點到 B 點的向量
-            //Vector3 vector = next - now;
-            // 外積
-            Quaternion rotation = Quaternion.Euler(0, 45, 0);
-            Vector3 rotateVector = rotation * now;
-            Vector3 cross = Vector3.Cross(now, rotateVector);
-            //transform.LookAt(transform.position + now, cross);
-            //transform.rotation = Quaternion.identity;
-            Debug.Log(now);
-            float angle = Vector3.Angle(originPathPoint[pathIndex], pathPoints[pathIndex]);
-            transform.rotation = Quaternion.identity;
-            transform.Rotate(root.transform.position, angle);
-            //transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, now);
-        }
+        //if (pathIndex < orientationPoints.Count - 1)
+        //{
+        //Vector3 now = orientationPoints[pathIndex];// root.GetPosition(pathIndex);
+        ////Vector3 next = orientationPoints[pathIndex + 1]; //root.GetPosition(pathIndex + 1);
+        //// A 點到 B 點的向量
+        ////Vector3 vector = next - now;
+        //// 外積
+        //Quaternion rotation = Quaternion.Euler(0, 45, 0);
+        //Vector3 rotateVector = rotation * now;
+        //Vector3 cross = Vector3.Cross(now, rotateVector);
+        ////transform.LookAt(transform.position + now, cross);
+        ////transform.rotation = Quaternion.identity;
+        //float angle = Vector3.Angle(originPathPoint[pathIndex], pathPoints[pathIndex]);
+        //transform.rotation = Quaternion.identity;
+        //transform.Rotate(root.transform.position, angle);
+        ////transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, now);
+        //}
     }
 
     public List<Vector3> GetAllPath()

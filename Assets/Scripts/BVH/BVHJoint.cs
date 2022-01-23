@@ -80,7 +80,6 @@ public class BVHJoint : MonoBehaviour
         }
         transform.localPosition = position;
         transform.localRotation = Quaternion.Euler(interpolated);
-
     }
 
     public Vector3 GetPosition(int frameNumber, Dictionary<int, float> frameData)
