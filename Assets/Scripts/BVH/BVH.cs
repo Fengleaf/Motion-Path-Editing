@@ -15,7 +15,7 @@ public class BVH : MonoBehaviour
 
     public BVHJoint root;
 
-    private List<BVHJoint> joints;
+    public List<BVHJoint> joints;
 
     private int frameNumber;
     private float frameTime;
@@ -172,18 +172,27 @@ public class BVH : MonoBehaviour
         Dictionary<string, float> nextFrame = root.GetFrameData(pathIndex + 1);
 
         Vector3 ori = originPathPoint[pathIndex];
+        Vector3 oriNext = originPathPoint[pathIndex + 1];
+        Vector3 oriTangent = oriNext - ori;
 
         Vector3 now = new Vector3(frame[BVHJoint.XPosition], frame[BVHJoint.YPosition], frame[BVHJoint.ZPosition]);
         Vector3 next = new Vector3(nextFrame[BVHJoint.XPosition], nextFrame[BVHJoint.YPosition], nextFrame[BVHJoint.ZPosition]);
+        Vector3 newTangent = next - now;
 
-        float costheta = Vector3.Dot(ori, now) / now.magnitude / ori.magnitude;
+        float m = newTangent.y / newTangent.x;
+        Debug.Log(m);
+
+        float costheta = Vector3.Dot(newTangent, oriTangent) / oriTangent.magnitude / newTangent.magnitude;
         float theta = Mathf.Acos(costheta) * Mathf.Rad2Deg;
         if (costheta >= 0.999f)
             theta = 0;
-        Debug.Log(theta);
+        //Debug.Log(theta);
+        if (m < 0)
+            theta *= -1;
         root.transform.RotateAround(root.transform.position, Vector3.up, theta);
 
-        Debug.DrawLine(ori, now, Color.red, 5f) ;
+        Debug.DrawLine(originPathPoint[0], originPathPoint[0] + oriTangent * 40, Color.red) ;
+        Debug.DrawLine(originPathPoint[0], originPathPoint[0] + newTangent * 40, Color.red) ;
         Debug.DrawLine(root.transform.position, root.transform.position + Vector3.up * 100, Color.green);
     }
 
