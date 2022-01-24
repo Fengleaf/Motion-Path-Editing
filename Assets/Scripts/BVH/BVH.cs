@@ -22,7 +22,7 @@ public class BVH : MonoBehaviour
     private int frameNumber;
     private float frameTime;
 
-    public List<Vector3> originPathPoint;
+    public List<Vector3> originPathPointOrientation;
     private List<Vector3> pathPoints;
     private List<Vector3> orientationPoints;
 
@@ -107,6 +107,7 @@ public class BVH : MonoBehaviour
         LoadPath(pathPoints);
 
         orientationPoints = pathManager.GetOrientations();
+        originPathPointOrientation = pathManager.GetOriOrientations();
 
         runFrameCoroutine = StartCoroutine(RunFrameCoroutine());
         //runPositionCoroutine = StartCoroutine(RunPositionCoroutine());
@@ -174,22 +175,22 @@ public class BVH : MonoBehaviour
         Dictionary<string, float> frame = root.GetFrameData(pathIndex);
         Dictionary<string, float> nextFrame = root.GetFrameData(pathIndex + 1);
 
-        Vector3 ori = originPathPoint[pathIndex];
-        Vector3 oriNext = originPathPoint[pathIndex + 1];
-        Vector3 oriTangent = oriNext - ori;
+        //Vector3 ori = originPathPoint[pathIndex];
+        //Vector3 oriNext = originPathPoint[pathIndex + 1];
+        //Vector3 oriTangent = oriNext - ori;
 
-        Vector3 now = new Vector3(frame[BVHJoint.XPosition], frame[BVHJoint.YPosition], frame[BVHJoint.ZPosition]);
-        Vector3 next = new Vector3(nextFrame[BVHJoint.XPosition], nextFrame[BVHJoint.YPosition], nextFrame[BVHJoint.ZPosition]);
-        Vector3 newTangent = next - now;
+        //Vector3 now = new Vector3(frame[BVHJoint.XPosition], frame[BVHJoint.YPosition], frame[BVHJoint.ZPosition]);
+        //Vector3 next = new Vector3(nextFrame[BVHJoint.XPosition], nextFrame[BVHJoint.YPosition], nextFrame[BVHJoint.ZPosition]);
+        //Vector3 newTangent = next - now;
 
-        float theta = Vector3.SignedAngle(oriTangent, newTangent, Vector3.up);
+        float theta = Vector3.SignedAngle(originPathPointOrientation[pathIndex], orientationPoints[pathIndex], Vector3.up);
         //if (m < 0)
         //    theta *= -1;
         root.transform.RotateAround(root.transform.position, Vector3.up, theta);
 
         //float testTheta = (oriTangent - newTangent) / (1 + oriTangent * newTangent);
-        Debug.DrawLine(root.transform.position, root.transform.position + oriTangent * 40, Color.yellow);
-        Debug.DrawLine(root.transform.position, root.transform.position + newTangent * 40, Color.red);
+        Debug.DrawLine(root.transform.position, root.transform.position + originPathPointOrientation[pathIndex] * 40, Color.yellow);
+        Debug.DrawLine(root.transform.position, root.transform.position + orientationPoints[pathIndex] * 40, Color.red);
         Debug.DrawLine(root.transform.position, root.transform.position + Vector3.up * 100, Color.green);
     }
 
@@ -312,7 +313,6 @@ public class BVH : MonoBehaviour
             }
         }
         frameNumber += target.frameNumber - indexJ;
-        originPathPoint = GetAllPath();
         Debug.Log(string.Join("\n", GetAllPath()));
 
         pathManager.SetBezierFitPath(GetAllPath());

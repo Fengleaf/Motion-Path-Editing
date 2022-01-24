@@ -156,7 +156,12 @@ public class PathManager : MonoBehaviour
         {
             newOrientation.Add(nowOrientation[i] - segments[0].oriFitPntOrientations[i]);
         }
-        return newOrientation;
+        return nowOrientation;
+    }
+
+    public List<Vector3> GetOriOrientations()
+    {
+        return segments[0].oriFitPntOrientations;
     }
 
     private GameObject newControllPntOb(Vector3 pos)
